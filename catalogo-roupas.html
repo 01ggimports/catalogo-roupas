@@ -1,0 +1,977 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Catálogo — Encomendas</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0e0c0a;
+    --surface: #1a1713;
+    --surface2: #242018;
+    --border: #2e2820;
+    --gold: #c9a84c;
+    --gold-light: #e8c96a;
+    --cream: #f5efe6;
+    --muted: #7a6e62;
+    --text: #ede8e0;
+    --danger: #c94c4c;
+    --green: #4cad7a;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    min-height: 100vh;
+    font-size: 15px;
+  }
+
+  /* HEADER */
+  header {
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    padding: 16px 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+
+  .logo {
+    font-family: 'Playfair Display', serif;
+    font-size: 22px;
+    color: var(--gold);
+    letter-spacing: 0.03em;
+  }
+
+  .logo span {
+    font-style: italic;
+    color: var(--cream);
+  }
+
+  .cart-btn {
+    background: var(--gold);
+    color: #0e0c0a;
+    border: none;
+    border-radius: 50px;
+    padding: 8px 16px;
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 500;
+    font-size: 13px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    transition: background 0.2s;
+  }
+
+  .cart-btn:hover { background: var(--gold-light); }
+
+  .cart-count {
+    background: #0e0c0a;
+    color: var(--gold);
+    border-radius: 50%;
+    width: 18px;
+    height: 18px;
+    font-size: 11px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+  }
+
+  /* HERO */
+  .hero {
+    padding: 32px 20px 20px;
+    text-align: center;
+    background: radial-gradient(ellipse at 50% 0%, #2a2118 0%, transparent 70%);
+  }
+
+  .hero h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: 28px;
+    color: var(--cream);
+    line-height: 1.2;
+    margin-bottom: 8px;
+  }
+
+  .hero p {
+    color: var(--muted);
+    font-size: 13px;
+    font-weight: 300;
+  }
+
+  .gold-line {
+    width: 40px;
+    height: 2px;
+    background: var(--gold);
+    margin: 14px auto;
+  }
+
+  /* FILTER CHIPS */
+  .filters {
+    display: flex;
+    gap: 8px;
+    padding: 16px 20px;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+  .filters::-webkit-scrollbar { display: none; }
+
+  .chip {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    color: var(--muted);
+    padding: 6px 14px;
+    border-radius: 50px;
+    font-size: 12px;
+    font-weight: 500;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: all 0.2s;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+
+  .chip.active, .chip:hover {
+    background: var(--gold);
+    border-color: var(--gold);
+    color: #0e0c0a;
+  }
+
+  /* GRID */
+  .grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    padding: 0 16px 120px;
+  }
+
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    overflow: hidden;
+    cursor: pointer;
+    transition: transform 0.2s, border-color 0.2s;
+  }
+
+  .card:hover { transform: translateY(-2px); border-color: var(--gold); }
+
+  .card-img {
+    aspect-ratio: 3/4;
+    background: var(--surface2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 48px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .card-img img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: top center;
+  }
+
+  .card-img .emoji-fallback {
+    position: relative;
+    z-index: 1;
+  }
+
+  .card-img::after {
+    content: '';
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    height: 60px;
+    background: linear-gradient(to top, var(--surface), transparent);
+  }
+
+  .badge {
+    position: absolute;
+    top: 8px; left: 8px;
+    background: var(--gold);
+    color: #0e0c0a;
+    font-size: 9px;
+    font-weight: 700;
+    padding: 3px 8px;
+    border-radius: 50px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+
+  .card-info {
+    padding: 12px;
+  }
+
+  .card-name {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--cream);
+    margin-bottom: 2px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .card-sub {
+    font-size: 11px;
+    color: var(--muted);
+    margin-bottom: 8px;
+  }
+
+  .card-price {
+    font-family: 'Playfair Display', serif;
+    font-size: 16px;
+    color: var(--gold);
+  }
+
+  /* MODAL */
+  .overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.7);
+    z-index: 200;
+    display: flex;
+    align-items: flex-end;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s;
+  }
+
+  .overlay.open { opacity: 1; pointer-events: all; }
+
+  .modal {
+    background: var(--surface);
+    border-radius: 24px 24px 0 0;
+    width: 100%;
+    max-height: 92vh;
+    overflow-y: auto;
+    transform: translateY(100%);
+    transition: transform 0.3s cubic-bezier(.32,.82,.32,1);
+    padding-bottom: 32px;
+  }
+
+  .overlay.open .modal { transform: translateY(0); }
+
+  .modal-handle {
+    width: 36px;
+    height: 4px;
+    background: var(--border);
+    border-radius: 2px;
+    margin: 12px auto 0;
+  }
+
+  .modal-img {
+    width: 100%;
+    aspect-ratio: 4/3;
+    background: var(--surface2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 80px;
+    margin-top: 12px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .modal-img img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: top center;
+  }
+
+  .modal-img .emoji-fallback {
+    position: relative;
+    z-index: 1;
+  }
+
+  .modal-body { padding: 20px; }
+
+  .modal-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 22px;
+    color: var(--cream);
+    margin-bottom: 4px;
+  }
+
+  .modal-cat {
+    font-size: 12px;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin-bottom: 12px;
+  }
+
+  .modal-price {
+    font-family: 'Playfair Display', serif;
+    font-size: 26px;
+    color: var(--gold);
+    margin-bottom: 20px;
+  }
+
+  .modal-desc {
+    font-size: 13px;
+    color: var(--muted);
+    line-height: 1.6;
+    margin-bottom: 20px;
+  }
+
+  .size-label {
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--cream);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    margin-bottom: 10px;
+  }
+
+  .sizes {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-bottom: 20px;
+  }
+
+  .size-btn {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    color: var(--text);
+    width: 44px;
+    height: 44px;
+    border-radius: 10px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+
+  .size-btn:hover { border-color: var(--gold); color: var(--gold); }
+  .size-btn.selected { background: var(--gold); border-color: var(--gold); color: #0e0c0a; font-weight: 700; }
+  .size-btn.unavailable { opacity: 0.3; cursor: not-allowed; }
+
+  .qty-row {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 24px;
+  }
+
+  .qty-label { font-size: 12px; font-weight: 500; color: var(--cream); text-transform: uppercase; letter-spacing: 0.06em; }
+
+  .qty-ctrl {
+    display: flex;
+    align-items: center;
+    gap: 0;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    overflow: hidden;
+  }
+
+  .qty-ctrl button {
+    background: none;
+    border: none;
+    color: var(--gold);
+    width: 40px;
+    height: 40px;
+    font-size: 18px;
+    cursor: pointer;
+    transition: background 0.15s;
+  }
+  .qty-ctrl button:hover { background: var(--border); }
+
+  .qty-val {
+    width: 36px;
+    text-align: center;
+    font-size: 15px;
+    font-weight: 500;
+    color: var(--cream);
+  }
+
+  .add-btn {
+    width: 100%;
+    background: var(--gold);
+    color: #0e0c0a;
+    border: none;
+    border-radius: 14px;
+    padding: 16px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 15px;
+    font-weight: 700;
+    cursor: pointer;
+    letter-spacing: 0.04em;
+    transition: background 0.2s;
+  }
+  .add-btn:hover { background: var(--gold-light); }
+  .add-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+
+  /* CART DRAWER */
+  .cart-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.7);
+    z-index: 300;
+    display: flex;
+    align-items: flex-end;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s;
+  }
+
+  .cart-overlay.open { opacity: 1; pointer-events: all; }
+
+  .cart-drawer {
+    background: var(--surface);
+    border-radius: 24px 24px 0 0;
+    width: 100%;
+    max-height: 90vh;
+    overflow-y: auto;
+    transform: translateY(100%);
+    transition: transform 0.3s cubic-bezier(.32,.82,.32,1);
+    padding-bottom: 32px;
+  }
+
+  .cart-overlay.open .cart-drawer { transform: translateY(0); }
+
+  .cart-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 20px 20px 16px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .cart-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 20px;
+    color: var(--cream);
+  }
+
+  .close-btn {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    color: var(--muted);
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    font-size: 16px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .cart-items { padding: 16px 20px; }
+
+  .cart-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 0;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .cart-item-img {
+    width: 56px;
+    height: 56px;
+    background: var(--surface2);
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    flex-shrink: 0;
+  }
+
+  .cart-item-info { flex: 1; min-width: 0; }
+  .cart-item-name { font-size: 13px; font-weight: 500; color: var(--cream); }
+  .cart-item-size { font-size: 11px; color: var(--muted); }
+  .cart-item-price { font-size: 13px; color: var(--gold); font-family: 'Playfair Display', serif; }
+
+  .cart-item-remove {
+    background: none;
+    border: none;
+    color: var(--danger);
+    font-size: 18px;
+    cursor: pointer;
+    padding: 4px;
+  }
+
+  .cart-empty {
+    text-align: center;
+    padding: 40px 20px;
+    color: var(--muted);
+  }
+
+  .cart-empty span { font-size: 48px; display: block; margin-bottom: 12px; }
+
+  .cart-footer {
+    padding: 16px 20px 0;
+  }
+
+  .cart-total-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 14px 0;
+    border-top: 1px solid var(--border);
+    margin-bottom: 16px;
+  }
+
+  .cart-total-label { font-size: 14px; color: var(--muted); }
+  .cart-total-val { font-family: 'Playfair Display', serif; font-size: 22px; color: var(--gold); }
+
+  /* FORM */
+  .form-section { padding: 0 20px; }
+  .form-title {
+    font-size: 12px;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--muted);
+    margin-bottom: 12px;
+  }
+
+  .input-field {
+    width: 100%;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    color: var(--cream);
+    border-radius: 12px;
+    padding: 14px 16px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    margin-bottom: 10px;
+    transition: border-color 0.2s;
+    outline: none;
+  }
+
+  .input-field:focus { border-color: var(--gold); }
+  .input-field::placeholder { color: var(--muted); }
+
+  .whatsapp-btn {
+    width: 100%;
+    background: #25d366;
+    color: #fff;
+    border: none;
+    border-radius: 14px;
+    padding: 16px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 15px;
+    font-weight: 700;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    margin-top: 8px;
+    transition: background 0.2s;
+  }
+
+  .whatsapp-btn:hover { background: #1ebe5d; }
+  .whatsapp-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+  /* TOAST */
+  .toast {
+    position: fixed;
+    bottom: 80px;
+    left: 50%;
+    transform: translateX(-50%) translateY(20px);
+    background: var(--green);
+    color: #fff;
+    padding: 10px 20px;
+    border-radius: 50px;
+    font-size: 13px;
+    font-weight: 500;
+    z-index: 999;
+    opacity: 0;
+    transition: all 0.3s;
+    white-space: nowrap;
+  }
+
+  .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+  textarea.input-field { min-height: 72px; resize: none; }
+
+  @media (min-width: 480px) {
+    .grid { grid-template-columns: repeat(3, 1fr); }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">Fashion<span>Link</span></div>
+  <button class="cart-btn" onclick="openCart()">
+    🛍️ Sacola
+    <span class="cart-count" id="cartCount">0</span>
+  </button>
+</header>
+
+<div class="hero">
+  <h1>Escolha sua peça<br>e faça seu pedido</h1>
+  <div class="gold-line"></div>
+  <p>Selecione o modelo, tamanho e quantidade — simples assim.</p>
+</div>
+
+<div class="filters" id="filters">
+  <button class="chip active" onclick="filterCat('all', this)">Tudo</button>
+  <button class="chip" onclick="filterCat('feminino', this)">Feminino</button>
+  <button class="chip" onclick="filterCat('masculino', this)">Masculino</button>
+  <button class="chip" onclick="filterCat('vestido', this)">Vestidos</button>
+  <button class="chip" onclick="filterCat('casual', this)">Casual</button>
+  <button class="chip" onclick="filterCat('plus', this)">Plus Size</button>
+</div>
+
+<div class="grid" id="productGrid"></div>
+
+<!-- PRODUCT MODAL -->
+<div class="overlay" id="productOverlay" onclick="handleOverlayClick(event, 'productOverlay')">
+  <div class="modal" id="productModal">
+    <div class="modal-handle"></div>
+    <div class="modal-img" id="modalImg"></div>
+    <div class="modal-body">
+      <div class="modal-cat" id="modalCat"></div>
+      <div class="modal-title" id="modalTitle"></div>
+      <div class="modal-price" id="modalPrice"></div>
+      <div class="modal-desc" id="modalDesc"></div>
+      <div class="size-label">Tamanho</div>
+      <div class="sizes" id="modalSizes"></div>
+      <div class="qty-row">
+        <span class="qty-label">Quantidade</span>
+        <div class="qty-ctrl">
+          <button onclick="changeQty(-1)">−</button>
+          <span class="qty-val" id="qtyVal">1</span>
+          <button onclick="changeQty(1)">+</button>
+        </div>
+      </div>
+      <button class="add-btn" id="addBtn" onclick="addToCart()">Adicionar à sacola</button>
+    </div>
+  </div>
+</div>
+
+<!-- CART DRAWER -->
+<div class="cart-overlay" id="cartOverlay" onclick="handleOverlayClick(event, 'cartOverlay')">
+  <div class="cart-drawer">
+    <div class="cart-header">
+      <div class="cart-title">Minha Sacola 🛍️</div>
+      <button class="close-btn" onclick="closeCart()">✕</button>
+    </div>
+    <div class="cart-items" id="cartItems"></div>
+
+    <div class="cart-footer" id="cartFooter" style="display:none">
+      <div class="cart-total-row">
+        <span class="cart-total-label">Total estimado</span>
+        <span class="cart-total-val" id="cartTotal">R$ 0,00</span>
+      </div>
+      <div class="form-section">
+        <div class="form-title">Seus dados para o pedido</div>
+        <input class="input-field" id="clientName" placeholder="Seu nome completo" type="text">
+        <input class="input-field" id="clientPhone" placeholder="Seu WhatsApp (11) 99999-9999" type="tel">
+        <textarea class="input-field" id="clientObs" placeholder="Observações (opcional): cor preferida, prazo, etc."></textarea>
+        <button class="whatsapp-btn" onclick="sendOrder()">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="white"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+          Enviar pedido via WhatsApp
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast">✓ Adicionado à sacola!</div>
+
+<script>
+// =====================
+// CONFIGURAÇÃO — Edite aqui!
+// =====================
+const WHATSAPP_NUMBER = "5511999999999"; // Número do seu irmão com DDI+DDD
+
+const PRODUCTS = [
+  {
+    id: 1, name: "Vestido Linho Midi", category: "vestido",
+    price: 159.90, emoji: "👗",
+    img: "fotos/vestido-linho-midi.jpg",
+    desc: "Vestido midi em linho premium, levíssimo e elegante. Ideal para o dia a dia ou ocasiões casuais.",
+    sizes: ["PP","P","M","G","GG"],
+    unavailable: [],
+    badge: "Novo"
+  },
+  {
+    id: 2, name: "Blusa Cropped Rib", category: "feminino",
+    price: 59.90, emoji: "👚",
+    img: "fotos/blusa-cropped-rib.jpg",
+    desc: "Cropped canelado de malha, modelagem justa com caimento impecável. Combina com tudo.",
+    sizes: ["PP","P","M","G","GG"],
+    unavailable: ["PP"],
+    badge: null
+  },
+  {
+    id: 3, name: "Calça Cargo Wide", category: "feminino",
+    price: 129.90, emoji: "👖",
+    img: "fotos/calca-cargo-wide.jpg",
+    desc: "Calça cargo wide leg com cintura alta, bolsos laterais e tecido resistente.",
+    sizes: ["36","38","40","42","44","46"],
+    unavailable: [],
+    badge: "Mais pedido"
+  },
+  {
+    id: 4, name: "Camiseta Oversized", category: "masculino",
+    price: 69.90, emoji: "👕",
+    img: "fotos/camiseta-oversized.jpg",
+    desc: "Camiseta 100% algodão no fit oversized. Disponível em diversas cores — informe na observação.",
+    sizes: ["P","M","G","GG","XGG"],
+    unavailable: [],
+    badge: null
+  },
+  {
+    id: 5, name: "Shorts Linho Masc.", category: "masculino",
+    price: 89.90, emoji: "🩳",
+    img: "fotos/shorts-linho-masculino.jpg",
+    desc: "Shorts masculino em linho com elástico na cintura. Leve e fresquinho.",
+    sizes: ["38","40","42","44","46","48"],
+    unavailable: ["48"],
+    badge: null
+  },
+  {
+    id: 6, name: "Vestido Floral Plus", category: "plus",
+    price: 139.90, emoji: "🌸",
+    img: "fotos/vestido-floral-plus.jpg",
+    desc: "Vestido floral com tecido fluído e decote em V. Corte favorecedor para todos os corpos.",
+    sizes: ["48","50","52","54","56"],
+    unavailable: [],
+    badge: "Plus Size"
+  },
+  {
+    id: 7, name: "Conjunto Alfaiataria", category: "feminino",
+    price: 219.90, emoji: "🧥",
+    img: "fotos/conjunto-alfaiataria.jpg",
+    desc: "Blazer + calça em tecido alfaiataria. Look completo para trabalho ou eventos.",
+    sizes: ["PP","P","M","G","GG"],
+    unavailable: ["PP"],
+    badge: "Destaque"
+  },
+  {
+    id: 8, name: "Camisa Social Slim", category: "masculino",
+    price: 99.90, emoji: "👔",
+    img: "fotos/camisa-social-slim.jpg",
+    desc: "Camisa social slim fit, 100% algodão, manga longa. Básico indispensável.",
+    sizes: ["P","M","G","GG","XGG"],
+    unavailable: [],
+    badge: null
+  },
+  {
+    id: 9, name: "Saia Midi Plissada", category: "casual",
+    price: 89.90, emoji: "👘",
+    img: "fotos/saia-midi-plissada.jpg",
+    desc: "Saia midi plissada com elástico na cintura. Versátil, pode usar no trabalho ou lazer.",
+    sizes: ["P","M","G","GG"],
+    unavailable: [],
+    badge: null
+  },
+  {
+    id: 10, name: "Moletom Oversized", category: "casual",
+    price: 119.90, emoji: "🧸",
+    img: "fotos/moletom-oversized.jpg",
+    desc: "Moletom grosso e quentinho, fit oversized com capuz. Perfeito pro inverno.",
+    sizes: ["PP","P","M","G","GG","XGG"],
+    unavailable: [],
+    badge: null
+  },
+];
+
+// =====================
+let cart = [];
+let currentProduct = null;
+let selectedSize = null;
+let qty = 1;
+let currentFilter = 'all';
+
+function formatPrice(p) {
+  return "R$ " + p.toFixed(2).replace(".", ",");
+}
+
+function imgTag(img, emoji, alt) {
+  if (!img) return `<span class="emoji-fallback">${emoji}</span>`;
+  return `<img src="${img}" alt="${alt}" onerror="this.style.display='none';this.nextElementSibling.style.display='block'"><span class="emoji-fallback" style="display:none">${emoji}</span>`;
+}
+
+function renderGrid(filter) {
+  const grid = document.getElementById("productGrid");
+  const filtered = filter === 'all' ? PRODUCTS : PRODUCTS.filter(p => p.category === filter);
+  grid.innerHTML = filtered.map(p => `
+    <div class="card" onclick="openProduct(${p.id})">
+      <div class="card-img">
+        ${p.badge ? `<div class="badge">${p.badge}</div>` : ""}
+        ${imgTag(p.img, p.emoji, p.name)}
+      </div>
+      <div class="card-info">
+        <div class="card-name">${p.name}</div>
+        <div class="card-sub">${categoryLabel(p.category)}</div>
+        <div class="card-price">${formatPrice(p.price)}</div>
+      </div>
+    </div>
+  `).join("");
+}
+
+function categoryLabel(cat) {
+  const map = { feminino: "Feminino", masculino: "Masculino", vestido: "Vestido", casual: "Casual", plus: "Plus Size" };
+  return map[cat] || cat;
+}
+
+function filterCat(cat, el) {
+  currentFilter = cat;
+  document.querySelectorAll(".chip").forEach(c => c.classList.remove("active"));
+  el.classList.add("active");
+  renderGrid(cat);
+}
+
+function openProduct(id) {
+  const p = PRODUCTS.find(x => x.id === id);
+  currentProduct = p;
+  selectedSize = null;
+  qty = 1;
+  document.getElementById("qtyVal").textContent = 1;
+  document.getElementById("modalImg").innerHTML = imgTag(p.img, p.emoji, p.name);
+  document.getElementById("modalCat").textContent = categoryLabel(p.category);
+  document.getElementById("modalTitle").textContent = p.name;
+  document.getElementById("modalPrice").textContent = formatPrice(p.price);
+  document.getElementById("modalDesc").textContent = p.desc;
+  document.getElementById("modalSizes").innerHTML = p.sizes.map(s => {
+    const unavail = p.unavailable.includes(s);
+    return `<button class="size-btn ${unavail ? "unavailable" : ""}" onclick="${unavail ? "" : `selectSize('${s}', this)`}">${s}</button>`;
+  }).join("");
+  document.getElementById("addBtn").disabled = true;
+  document.getElementById("productOverlay").classList.add("open");
+}
+
+function selectSize(s, el) {
+  selectedSize = s;
+  document.querySelectorAll(".size-btn").forEach(b => b.classList.remove("selected"));
+  el.classList.add("selected");
+  document.getElementById("addBtn").disabled = false;
+}
+
+function changeQty(d) {
+  qty = Math.max(1, qty + d);
+  document.getElementById("qtyVal").textContent = qty;
+}
+
+function addToCart() {
+  if (!selectedSize) return;
+  const existing = cart.find(i => i.id === currentProduct.id && i.size === selectedSize);
+  if (existing) {
+    existing.qty += qty;
+  } else {
+    cart.push({ ...currentProduct, size: selectedSize, qty });
+  }
+  updateCartCount();
+  document.getElementById("productOverlay").classList.remove("open");
+  showToast("✓ Adicionado à sacola!");
+}
+
+function updateCartCount() {
+  const total = cart.reduce((s, i) => s + i.qty, 0);
+  document.getElementById("cartCount").textContent = total;
+}
+
+function openCart() {
+  renderCart();
+  document.getElementById("cartOverlay").classList.add("open");
+}
+
+function closeCart() {
+  document.getElementById("cartOverlay").classList.remove("open");
+}
+
+function renderCart() {
+  const el = document.getElementById("cartItems");
+  const footer = document.getElementById("cartFooter");
+  if (cart.length === 0) {
+    el.innerHTML = `<div class="cart-empty"><span>🛍️</span>Sua sacola está vazia.<br>Adicione peças para pedir!</div>`;
+    footer.style.display = "none";
+    return;
+  }
+  footer.style.display = "block";
+  el.innerHTML = cart.map((item, idx) => `
+    <div class="cart-item">
+      <div class="cart-item-img">${imgTag(item.img, item.emoji, item.name)}</div>
+      <div class="cart-item-info">
+        <div class="cart-item-name">${item.name}</div>
+        <div class="cart-item-size">Tam. ${item.size} · Qtd: ${item.qty}</div>
+        <div class="cart-item-price">${formatPrice(item.price * item.qty)}</div>
+      </div>
+      <button class="cart-item-remove" onclick="removeItem(${idx})">🗑️</button>
+    </div>
+  `).join("");
+
+  const total = cart.reduce((s, i) => s + i.price * i.qty, 0);
+  document.getElementById("cartTotal").textContent = formatPrice(total);
+}
+
+function removeItem(idx) {
+  cart.splice(idx, 1);
+  updateCartCount();
+  renderCart();
+}
+
+function sendOrder() {
+  const name = document.getElementById("clientName").value.trim();
+  const phone = document.getElementById("clientPhone").value.trim();
+  const obs = document.getElementById("clientObs").value.trim();
+
+  if (!name) { alert("Por favor, informe seu nome."); return; }
+  if (!phone) { alert("Por favor, informe seu WhatsApp."); return; }
+  if (cart.length === 0) return;
+
+  let msg = `🛍️ *NOVO PEDIDO*\n\n`;
+  msg += `👤 *Cliente:* ${name}\n`;
+  msg += `📱 *WhatsApp:* ${phone}\n\n`;
+  msg += `*Itens do pedido:*\n`;
+  msg += `─────────────────\n`;
+
+  cart.forEach(item => {
+    msg += `• ${item.name}\n  Tam: ${item.size} | Qtd: ${item.qty} | ${formatPrice(item.price * item.qty)}\n`;
+  });
+
+  const total = cart.reduce((s, i) => s + i.price * i.qty, 0);
+  msg += `─────────────────\n`;
+  msg += `💰 *Total: ${formatPrice(total)}*\n`;
+
+  if (obs) msg += `\n📝 *Obs:* ${obs}`;
+
+  const url = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(msg)}`;
+  window.open(url, "_blank");
+}
+
+function handleOverlayClick(e, id) {
+  if (e.target.id === id) {
+    document.getElementById(id).classList.remove("open");
+  }
+}
+
+function showToast(msg) {
+  const t = document.getElementById("toast");
+  t.textContent = msg;
+  t.classList.add("show");
+  setTimeout(() => t.classList.remove("show"), 2500);
+}
+
+renderGrid("all");
+</script>
+</body>
+</html>
