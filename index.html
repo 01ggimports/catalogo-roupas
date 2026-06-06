@@ -540,7 +540,7 @@
 <body>
 
 <header>
-  <div class="logo" onclick="goHome()">Fashion<span>Link</span></div>
+  <div class="logo" onclick="goHome()">GG<span>Imports</span></div>
   <button class="cart-btn" onclick="openCart()">
     🛍️ Sacola
     <span class="cart-count" id="cartCount">0</span>
@@ -666,140 +666,86 @@ const PRODUCTS = [
     badge: "Novo"
   },
   {
-    id: 2, name: "Blusa Cropped Rib", category: "feminino",
+    id: 2, name: "Blusa Cropped - Poliamida", category: "feminino",
     price: 59.90, emoji: "👚",
-    img: "fotos/blusa-cropped-rib.jpg",
-    desc: "Cropped canelado de malha, modelagem justa com caimento impecável.",
+    img: "fotos/cropped.jpeg",
+    desc: "Forro duplo nos seios, Multiformas (várias formas de uso), Tamanho único (36 ao 40/42).",
     colors: [
       { name: "Preto", hex: "#1a1a1a" },
-      { name: "Branco", hex: "#f0ece4" },
+      { name: "Chocolate", hex: "#D2691E" },
+      { name: "Cinza Claro", hex: "#E0E0E0" },
+      { name: "Azul Escuro", hex: "#000080" },
+      { name: "Rosa Neon", hex: "#FF13F0" },
+      { name: "Azul Turquesa", hex: "#30D5C8" },
       { name: "Rosa", hex: "#e8a0b0" },
-      { name: "Lilás", hex: "#b89ec4" },
-      { name: "Bege", hex: "#c8b49a" },
+      { name: "Verde Claro", hex: "#90EE90" },
     ],
-    sizes: ["PP","P","M","G","GG"],
-    unavailable: ["PP"],
+    sizes: ["Tamanho único"],
+    unavailable: [],
     badge: null
   },
   {
-    id: 3, name: "Calça Cargo Wide", category: "feminino",
+    id: 3, name: "Conjunto Juliet", category: "feminino",
     price: 129.90, emoji: "👖",
-    img: "fotos/calca-cargo-wide.jpg",
-    desc: "Calça cargo wide leg com cintura alta, bolsos laterais e tecido resistente.",
+    img: "fotos/juliet.jpeg",
+    desc: "Conjunto juliet - alfaiataria.",
     colors: [
       { name: "Preto", hex: "#1a1a1a" },
-      { name: "Khaki", hex: "#7a7a50" },
-      { name: "Caramelo", hex: "#a87040" },
-      { name: "Cinza", hex: "#707070" },
+      { name: "Amarelo", hex: "#FFFF00" },
+      { name: "Verde Menta", hex: "#ADEBB3" },
     ],
-    sizes: ["36","38","40","42","44","46"],
+    sizes: ["P","M","G","GG"],
     unavailable: [],
     badge: "Mais pedido"
   },
   {
-    id: 4, name: "Camiseta Oversized", category: "masculino",
+    id: 4, name: "Calça Pantalona - Alfaiataria", category: "feminino",
     price: 69.90, emoji: "👕",
-    img: "fotos/camiseta-oversized.jpg",
-    desc: "Camiseta 100% algodão no fit oversized.",
+    img: "fotos/pantalona.jpeg",
+    desc: "Calça Pantalona básica- alfaiataria.",
     colors: [
       { name: "Branco", hex: "#f0ece4" },
       { name: "Preto", hex: "#1a1a1a" },
-      { name: "Cinza Mescla", hex: "#909090" },
-      { name: "Azul Marinho", hex: "#243055" },
-      { name: "Verde Oliva", hex: "#5a6040" },
-    ],
-    sizes: ["P","M","G","GG","XGG"],
-    unavailable: [],
-    badge: null
-  },
-  {
-    id: 5, name: "Shorts Linho Masc.", category: "masculino",
-    price: 89.90, emoji: "🩳",
-    img: "fotos/shorts-linho-masculino.jpg",
-    desc: "Shorts masculino em linho com elástico na cintura. Leve e fresquinho.",
-    colors: [
-      { name: "Bege", hex: "#c8b49a" },
-      { name: "Branco", hex: "#f0ece4" },
-      { name: "Azul", hex: "#4a6888" },
-      { name: "Verde Sage", hex: "#7a9070" },
-    ],
-    sizes: ["38","40","42","44","46","48"],
-    unavailable: ["48"],
-    badge: null
-  },
-  {
-    id: 6, name: "Vestido Floral Plus", category: "plus",
-    price: 139.90, emoji: "🌸",
-    img: "fotos/vestido-floral-plus.jpg",
-    desc: "Vestido floral com tecido fluído e decote em V. Corte favorecedor para todos os corpos.",
-    colors: [
-      { name: "Floral Rosa", hex: "#d4788a/#f8d0e0" },
-      { name: "Floral Azul", hex: "#5878a0/#c8d8f0" },
-      { name: "Floral Verde", hex: "#508060/#c8e0d0" },
-    ],
-    sizes: ["48","50","52","54","56"],
-    unavailable: [],
-    badge: "Plus Size"
-  },
-  {
-    id: 7, name: "Conjunto Alfaiataria", category: "feminino",
-    price: 219.90, emoji: "🧥",
-    img: "fotos/conjunto-alfaiataria.jpg",
-    desc: "Blazer + calça em tecido alfaiataria. Look completo para trabalho ou eventos.",
-    colors: [
-      { name: "Preto", hex: "#1a1a1a" },
-      { name: "Caramelo", hex: "#a87040" },
-      { name: "Cinza", hex: "#606060" },
       { name: "Off-White", hex: "#e8dcc8" },
-    ],
-    sizes: ["PP","P","M","G","GG"],
-    unavailable: ["PP"],
-    badge: "Destaque"
-  },
-  {
-    id: 8, name: "Camisa Social Slim", category: "masculino",
-    price: 99.90, emoji: "👔",
-    img: "fotos/camisa-social-slim.jpg",
-    desc: "Camisa social slim fit, 100% algodão, manga longa.",
-    colors: [
-      { name: "Branco", hex: "#f0ece4" },
-      { name: "Azul Claro", hex: "#90b8d8" },
-      { name: "Rosa Claro", hex: "#e8b8c0" },
-      { name: "Xadrez P&B", hex: "#e0e0e0/#606060" },
-    ],
-    sizes: ["P","M","G","GG","XGG"],
-    unavailable: [],
-    badge: null
-  },
-  {
-    id: 9, name: "Saia Midi Plissada", category: "casual",
-    price: 89.90, emoji: "👘",
-    img: "fotos/saia-midi-plissada.jpg",
-    desc: "Saia midi plissada com elástico na cintura. Versátil para trabalho ou lazer.",
-    colors: [
-      { name: "Preto", hex: "#1a1a1a" },
-      { name: "Vinho", hex: "#7a2030" },
-      { name: "Caramelo", hex: "#b87840" },
+      { name: "Marrom", hex: "#964B00" },
+      { name: "Cinza", hex: "#808080" },
+      { name: "Cinza Chumbo", hex: "#818589" },
       { name: "Azul Marinho", hex: "#243055" },
+      { name: "Bege", hex: "#c8b49a" },
+      { name: "Bege Escuro", hex: "#AC9362" },
+      { name: "Amarelo", hex: "#FFFF00" },
+      { name: "Verde Militar", hex: "#4B5320" },
+      { name: "Verde Bandeira", hex: "#009440" },
+      { name: "Terra Cota", hex: "#E35336" },
+      { name: "Vinho", hex: "#722F37" },
+      { name: "Vermelho", hex: "#FF0000" },
     ],
-    sizes: ["P","M","G","GG"],
+    sizes: ["P","M","G","GG","G1"],
+    unavailable: ["G1"],
+    badge: null
+  },
+  {
+    id: 5, name: "Camiseta Brasil - Masculina.", category: "masculino",
+    price: 89.90, emoji: "🩳",
+    img: "fotos/brasil.jpeg",
+    desc: "TAILANDESA BRASIL AZUL - MODELO TORCEDOR. ‼️Logo e brasão bordados.‼️Acabamento premium, idêntica à original.",
+    colors: [
+      { name: "Azul", hex: "#4a6888" },
+    ],
+    sizes: ["P","M","G","GG","G1","G2"],
     unavailable: [],
     badge: null
   },
   {
-    id: 10, name: "Moletom Oversized", category: "casual",
-    price: 119.90, emoji: "🧸",
-    img: "fotos/moletom-oversized.jpg",
-    desc: "Moletom grosso e quentinho, fit oversized com capuz. Perfeito pro inverno.",
+    id: 6, name: "Camiseta Brasil - Feminino.", category: "feminino",
+    price: 89.90, emoji: "🩳",
+    img: "fotos/brasil.jpeg",
+    desc: "TAILANDESA BRASIL AZUL - MODELO TORCEDOR. ‼️Logo e brasão bordados.‼️Acabamento premium, idêntica à original.",
     colors: [
-      { name: "Cinza Mescla", hex: "#909090" },
-      { name: "Preto", hex: "#1a1a1a" },
-      { name: "Creme", hex: "#e8d8c0" },
-      { name: "Verde Oliva", hex: "#5a6040" },
-      { name: "Azul Bic", hex: "#2848a0" },
+      { name: "Azul", hex: "#4a6888" },
     ],
-    sizes: ["PP","P","M","G","GG","XGG"],
-    unavailable: [],
+    sizes: ["P","M","G","GG","G1","G2"],
+    unavailable: ["G2"],
     badge: null
   },
 ];
