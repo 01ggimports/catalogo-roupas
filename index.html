@@ -559,9 +559,6 @@
     <button class="chip active" onclick="filterCat('all', this)">Tudo</button>
     <button class="chip" onclick="filterCat('feminino', this)">Feminino</button>
     <button class="chip" onclick="filterCat('masculino', this)">Masculino</button>
-    <button class="chip" onclick="filterCat('vestido', this)">Vestidos</button>
-    <button class="chip" onclick="filterCat('casual', this)">Casual</button>
-    <button class="chip" onclick="filterCat('plus', this)">Plus Size</button>
   </div>
 
   <div class="grid" id="productGrid"></div>
@@ -1327,7 +1324,7 @@ function swatchStyle(hex) {
 }
 
 function categoryLabel(cat) {
-  const map = { feminino: "Feminino", masculino: "Masculino", vestido: "Vestido", casual: "Casual", plus: "Plus Size" };
+  const map = { feminino: "Feminino", masculino: "Masculino" };
   return map[cat] || cat;
 }
 
