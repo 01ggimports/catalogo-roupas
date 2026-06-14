@@ -131,6 +131,10 @@
   }
   .card:hover { transform: translateY(-2px); border-color: var(--gold); }
 
+  /* Card indisponível: sem hover */
+  .card.sold-out { cursor: default; }
+  .card.sold-out:hover { transform: none; border-color: var(--border); }
+
   .card-img {
     aspect-ratio: 3/4;
     background: var(--surface2);
@@ -149,6 +153,39 @@
     bottom: 0; left: 0; right: 0;
     height: 60px;
     background: linear-gradient(to top, var(--surface), transparent);
+  }
+
+  /* GRAYSCALE para cards totalmente indisponíveis */
+  .card.sold-out .card-img img,
+  .card.sold-out .card-img .emoji-fallback {
+    filter: grayscale(100%);
+    opacity: 0.55;
+  }
+
+  /* MARCA D'ÁGUA "INDISPONÍVEL" */
+  .sold-out-overlay {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 3;
+    pointer-events: none;
+  }
+  .sold-out-overlay span {
+    background: rgba(14, 12, 10, 0.55);
+    color: rgba(245, 239, 230, 0.85);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    padding: 6px 14px;
+    border: 1.5px solid rgba(245, 239, 230, 0.35);
+    border-radius: 4px;
+    transform: rotate(-30deg);
+    backdrop-filter: blur(2px);
+    white-space: nowrap;
   }
 
   .badge {
@@ -185,6 +222,9 @@
   .card-name { font-size: 13px; font-weight: 500; color: var(--cream); margin-bottom: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
   .card-sub { font-size: 11px; color: var(--muted); margin-bottom: 8px; }
   .card-price { font-family: 'Playfair Display', serif; font-size: 16px; color: var(--gold); }
+
+  /* Preço muted quando indisponível */
+  .card.sold-out .card-price { color: var(--muted); }
 
   /* PRODUCT PAGE */
   .product-page { background: var(--bg); min-height: 100vh; padding-bottom: 120px; }
@@ -651,40 +691,10 @@ const PRODUCTS = [
     category: "feminino",
     price: 65,
     emoji: "👗",
-    img: [
-      "fotos/babytee.jpeg",
-      "fotos/babytee2.jpeg"
-    ],
+    img: ["fotos/babytee.jpeg","fotos/babytee2.jpeg"],
     desc: "Peça coringa para todas as estações. Tamanho único veste do 36 ao 40.",
-    colors: [
-      {
-        name: "Preto",
-        hex: "#1a1a1a"
-      },
-      {
-        name: "Cinza",
-        hex: "#808080"
-      },
-      {
-        name: "Off-White",
-        hex: "#e8dcc8"
-      },
-      {
-        name: "Verde Escuro",
-        hex: "#013220"
-      },
-      {
-        name: "Rosa",
-        hex: "#e8a0b0"
-      },
-      {
-        name: "Chocolate",
-        hex: "#D2691E"
-      }
-    ],
-    sizes: [
-      "Tamanho único"
-    ],
+    colors: [{name:"Preto",hex:"#1a1a1a"},{name:"Cinza",hex:"#808080"},{name:"Off-White",hex:"#e8dcc8"},{name:"Verde Escuro",hex:"#013220"},{name:"Rosa",hex:"#e8a0b0"},{name:"Chocolate",hex:"#D2691E"}],
+    sizes: ["Tamanho único"],
     unavailable: [],
     badge: "Novo"
   },
@@ -694,47 +704,10 @@ const PRODUCTS = [
     category: "feminino",
     price: 59.9,
     emoji: "👚",
-    img: [
-      "fotos/cropped.jpeg"
-    ],
+    img: ["fotos/cropped.jpeg"],
     desc: "Forro duplo nos seios, Multiformas (várias formas de uso), Tamanho único (36 ao 40/42).",
-    colors: [
-      {
-        name: "Preto",
-        hex: "#1a1a1a"
-      },
-      {
-        name: "Chocolate",
-        hex: "#D2691E"
-      },
-      {
-        name: "Cinza Claro",
-        hex: "#E0E0E0"
-      },
-      {
-        name: "Azul Escuro",
-        hex: "#000080"
-      },
-      {
-        name: "Rosa Neon",
-        hex: "#FF13F0"
-      },
-      {
-        name: "Azul Turquesa",
-        hex: "#30D5C8"
-      },
-      {
-        name: "Rosa",
-        hex: "#e8a0b0"
-      },
-      {
-        name: "Verde Claro",
-        hex: "#90EE90"
-      }
-    ],
-    sizes: [
-      "Tamanho único"
-    ],
+    colors: [{name:"Preto",hex:"#1a1a1a"},{name:"Chocolate",hex:"#D2691E"},{name:"Cinza Claro",hex:"#E0E0E0"},{name:"Azul Escuro",hex:"#000080"},{name:"Rosa Neon",hex:"#FF13F0"},{name:"Azul Turquesa",hex:"#30D5C8"},{name:"Rosa",hex:"#e8a0b0"},{name:"Verde Claro",hex:"#90EE90"}],
+    sizes: ["Tamanho único"],
     unavailable: [],
     badge: null
   },
@@ -746,26 +719,8 @@ const PRODUCTS = [
     emoji: "👖",
     img: "fotos/juliet.jpeg",
     desc: "Conjunto juliet - alfaiataria.",
-    colors: [
-      {
-        name: "Preto",
-        hex: "#1a1a1a"
-      },
-      {
-        name: "Amarelo",
-        hex: "#FFFF00"
-      },
-      {
-        name: "Verde Menta",
-        hex: "#ADEBB3"
-      }
-    ],
-    sizes: [
-      "P",
-      "M",
-      "G",
-      "GG"
-    ],
+    colors: [{name:"Preto",hex:"#1a1a1a"},{name:"Amarelo",hex:"#FFFF00"},{name:"Verde Menta",hex:"#ADEBB3"}],
+    sizes: ["P","M","G","GG"],
     unavailable: [],
     badge: "Mais pedido"
   },
@@ -777,78 +732,9 @@ const PRODUCTS = [
     emoji: "👕",
     img: "fotos/pantalona.jpeg",
     desc: "Calça Pantalona básica- alfaiataria.",
-    colors: [
-      {
-        name: "Branco",
-        hex: "#f0ece4"
-      },
-      {
-        name: "Preto",
-        hex: "#1a1a1a"
-      },
-      {
-        name: "Off-White",
-        hex: "#e8dcc8"
-      },
-      {
-        name: "Marrom",
-        hex: "#964B00"
-      },
-      {
-        name: "Cinza",
-        hex: "#808080"
-      },
-      {
-        name: "Cinza Chumbo",
-        hex: "#818589"
-      },
-      {
-        name: "Azul Marinho",
-        hex: "#243055"
-      },
-      {
-        name: "Bege",
-        hex: "#c8b49a"
-      },
-      {
-        name: "Bege Escuro",
-        hex: "#AC9362"
-      },
-      {
-        name: "Amarelo",
-        hex: "#FFFF00"
-      },
-      {
-        name: "Verde Militar",
-        hex: "#4B5320"
-      },
-      {
-        name: "Verde Bandeira",
-        hex: "#009440"
-      },
-      {
-        name: "Terra Cota",
-        hex: "#E35336"
-      },
-      {
-        name: "Vinho",
-        hex: "#722F37"
-      },
-      {
-        name: "Vermelho",
-        hex: "#FF0000"
-      }
-    ],
-    sizes: [
-      "P",
-      "M",
-      "G",
-      "GG",
-      "G1"
-    ],
-    unavailable: [
-      "G1"
-    ],
+    colors: [{name:"Branco",hex:"#f0ece4"},{name:"Preto",hex:"#1a1a1a"},{name:"Off-White",hex:"#e8dcc8"},{name:"Marrom",hex:"#964B00"},{name:"Cinza",hex:"#808080"},{name:"Cinza Chumbo",hex:"#818589"},{name:"Azul Marinho",hex:"#243055"},{name:"Bege",hex:"#c8b49a"},{name:"Bege Escuro",hex:"#AC9362"},{name:"Amarelo",hex:"#FFFF00"},{name:"Verde Militar",hex:"#4B5320"},{name:"Verde Bandeira",hex:"#009440"},{name:"Terra Cota",hex:"#E35336"},{name:"Vinho",hex:"#722F37"},{name:"Vermelho",hex:"#FF0000"}],
+    sizes: ["P","M","G","GG","G1"],
+    unavailable: ["G1"],
     badge: null
   },
   {
@@ -859,25 +745,9 @@ const PRODUCTS = [
     emoji: "🩳",
     img: "fotos/brma_1.jpg",
     desc: "TAILANDESA BRASIL AZUL - MODELO TORCEDOR. ‼️Logo e brasão bordados.‼️Acabamento premium, idêntica à original.",
-    colors: [
-      {
-        name: "Azul",
-        hex: "#4a6888"
-      }
-    ],
-    sizes: [
-      "P",
-      "M",
-      "G",
-      "GG",
-      "G1",
-      "G2"
-    ],
-    unavailable: [
-      "P",
-      "G1",
-      "G2"
-    ],
+    colors: [{name:"Azul",hex:"#4a6888"}],
+    sizes: ["P","M","G","GG","G1","G2"],
+    unavailable: ["P","G1","G2"],
     badge: null
   },
   {
@@ -888,28 +758,9 @@ const PRODUCTS = [
     emoji: "🩳",
     img: "fotos/brfe_1.jpg",
     desc: "TAILANDESA BRASIL AZUL - MODELO TORCEDOR. ‼️Logo e brasão bordados.‼️Acabamento premium, idêntica à original.",
-    colors: [
-      {
-        name: "Azul",
-        hex: "#4a6888"
-      }
-    ],
-    sizes: [
-      "P",
-      "M",
-      "G",
-      "GG",
-      "G1",
-      "G2"
-    ],
-    unavailable: [
-      "G2",
-      "P",
-      "M",
-      "G",
-      "GG",
-      "G1"
-    ],
+    colors: [{name:"Azul",hex:"#4a6888"}],
+    sizes: ["P","M","G","GG","G1","G2"],
+    unavailable: ["G2","P","M","G","GG","G1"],
     badge: null
   },
   {
@@ -918,55 +769,10 @@ const PRODUCTS = [
     category: "feminino",
     price: 60,
     emoji: "👗",
-    img: [
-      "fotos/co_1.jpeg",
-      "fotos/co_2.jpeg"
-    ],
+    img: ["fotos/co_1.jpeg","fotos/co_2.jpeg"],
     desc: "",
-    colors: [
-      {
-        name: "Branco",
-        hex: "#ffffff"
-      },
-      {
-        name: "Off White",
-        hex: "#f5f5f5"
-      },
-      {
-        name: "Preto",
-        hex: "#000000"
-      },
-      {
-        name: "Bege Claro",
-        hex: "#c4a484"
-      },
-      {
-        name: "Bege Escuro",
-        hex: "#d5ac85"
-      },
-      {
-        name: "Vermelho",
-        hex: "#ff0000"
-      },
-      {
-        name: "Terra Cota",
-        hex: "#c58544"
-      },
-      {
-        name: "Azul Bebê",
-        hex: "#3c6ee2"
-      },
-      {
-        name: "Rosa Bebê",
-        hex: "#f72ba2"
-      }
-    ],
-    sizes: [
-      "P",
-      "M",
-      "G",
-      "GG"
-    ],
+    colors: [{name:"Branco",hex:"#ffffff"},{name:"Off White",hex:"#f5f5f5"},{name:"Preto",hex:"#000000"},{name:"Bege Claro",hex:"#c4a484"},{name:"Bege Escuro",hex:"#d5ac85"},{name:"Vermelho",hex:"#ff0000"},{name:"Terra Cota",hex:"#c58544"},{name:"Azul Bebê",hex:"#3c6ee2"},{name:"Rosa Bebê",hex:"#f72ba2"}],
+    sizes: ["P","M","G","GG"],
     unavailable: [],
     badge: null
   },
@@ -976,60 +782,11 @@ const PRODUCTS = [
     category: "masculino",
     price: 70,
     emoji: "👗",
-    img: [
-      "fotos/lac_1.jpeg",
-      "fotos/lac_2.jpeg",
-      "fotos/lac_3.jpeg",
-      "fotos/lac_4.jpeg",
-      "fotos/lac_5.jpeg",
-      "fotos/lac_6.jpeg",
-      "fotos/lac_7.jpeg",
-      "fotos/lac_8.jpeg"
-    ],
+    img: ["fotos/lac_1.jpeg","fotos/lac_2.jpeg","fotos/lac_3.jpeg","fotos/lac_4.jpeg","fotos/lac_5.jpeg","fotos/lac_6.jpeg","fotos/lac_7.jpeg","fotos/lac_8.jpeg"],
     desc: "",
-    colors: [
-      {
-        name: "Branco",
-        hex: "#ffffff"
-      },
-      {
-        name: "Preto",
-        hex: "#000000"
-      },
-      {
-        name: "Verde Claro",
-        hex: "#00a80b"
-      },
-      {
-        name: "Azul Marinho",
-        hex: "#0050d1"
-      },
-      {
-        name: "Azul Bebê",
-        hex: "#479bf5"
-      },
-      {
-        name: "Verde Musgo",
-        hex: "#0e7500"
-      },
-      {
-        name: "Vermelho",
-        hex: "#db0000"
-      },
-      {
-        name: "Azul Royal",
-        hex: "#2b00ff"
-      }
-    ],
-    sizes: [
-      "P",
-      "M",
-      "G",
-      "GG"
-    ],
-    unavailable: [
-      "P"
-    ],
+    colors: [{name:"Branco",hex:"#ffffff"},{name:"Preto",hex:"#000000"},{name:"Verde Claro",hex:"#00a80b"},{name:"Azul Marinho",hex:"#0050d1"},{name:"Azul Bebê",hex:"#479bf5"},{name:"Verde Musgo",hex:"#0e7500"},{name:"Vermelho",hex:"#db0000"},{name:"Azul Royal",hex:"#2b00ff"}],
+    sizes: ["P","M","G","GG"],
+    unavailable: ["P"],
     badge: "Promoção"
   },
   {
@@ -1038,46 +795,11 @@ const PRODUCTS = [
     category: "masculino",
     price: 70,
     emoji: "👗",
-    img: [
-      "fotos/boss_1.jpeg",
-      "fotos/boss_2.jpeg",
-      "fotos/boss_3.jpeg",
-      "fotos/boss_4.jpeg",
-      "fotos/boss_5.jpeg",
-      "fotos/boss_6.jpeg"
-    ],
+    img: ["fotos/boss_1.jpeg","fotos/boss_2.jpeg","fotos/boss_3.jpeg","fotos/boss_4.jpeg","fotos/boss_5.jpeg","fotos/boss_6.jpeg"],
     desc: "",
-    colors: [
-      {
-        name: "Branco",
-        hex: "#ffffff"
-      },
-      {
-        name: "Preto",
-        hex: "#000000"
-      },
-      {
-        name: "Azul Royal",
-        hex: "#2b00ff"
-      },
-      {
-        name: "Azul Bebê",
-        hex: "#3c6ee2"
-      },
-      {
-        name: "Azul Marinho",
-        hex: "#243055"
-      }
-    ],
-    sizes: [
-      "P",
-      "M",
-      "G",
-      "GG"
-    ],
-    unavailable: [
-      "P"
-    ],
+    colors: [{name:"Branco",hex:"#ffffff"},{name:"Preto",hex:"#000000"},{name:"Azul Royal",hex:"#2b00ff"},{name:"Azul Bebê",hex:"#3c6ee2"},{name:"Azul Marinho",hex:"#243055"}],
+    sizes: ["P","M","G","GG"],
+    unavailable: ["P"],
     badge: "Promoção"
   },
   {
@@ -1086,38 +808,11 @@ const PRODUCTS = [
     category: "masculino",
     price: 70,
     emoji: "👗",
-    img: [
-      "fotos/ea_1.jpeg",
-      "fotos/ea_2.jpeg"
-    ],
+    img: ["fotos/ea_1.jpeg","fotos/ea_2.jpeg"],
     desc: "",
-    colors: [
-      {
-        name: "Preto",
-        hex: "#1a1a1a"
-      },
-      {
-        name: "Cinza Escuro",
-        hex: "#4f4f4f"
-      },
-      {
-        name: "Vermelho",
-        hex: "#FF0000"
-      },
-      {
-        name: "Bege Claro",
-        hex: "#c4a484"
-      }
-    ],
-    sizes: [
-      "P",
-      "M",
-      "G",
-      "GG"
-    ],
-    unavailable: [
-      "P"
-    ],
+    colors: [{name:"Preto",hex:"#1a1a1a"},{name:"Cinza Escuro",hex:"#4f4f4f"},{name:"Vermelho",hex:"#FF0000"},{name:"Bege Claro",hex:"#c4a484"}],
+    sizes: ["P","M","G","GG"],
+    unavailable: ["P"],
     badge: "Promoção"
   },
   {
@@ -1126,46 +821,10 @@ const PRODUCTS = [
     category: "feminino",
     price: 65,
     emoji: "👗",
-    img: [
-      "fotos/lu_1.jpeg",
-      "fotos/lu_2.jpeg",
-      "fotos/lu_3.jpeg",
-      "fotos/lu_4.jpeg"
-    ],
+    img: ["fotos/lu_1.jpeg","fotos/lu_2.jpeg","fotos/lu_3.jpeg","fotos/lu_4.jpeg"],
     desc: "Diferenciais:\n* Abertura frontal moderna\n* Detalhe no dedo estilo gringa\n* Manga longa\n* Alta elasticidade\n* Tecido confortável e encorpado\n* Modelagem que valoriza o corpo",
-    colors: [
-      {
-        name: "Off White",
-        hex: "#f5f5f5"
-      },
-      {
-        name: "Preto",
-        hex: "#1a1a1a"
-      },
-      {
-        name: "Cinza Claro",
-        hex: "#E0E0E0"
-      },
-      {
-        name: "Vinho",
-        hex: "#722F37"
-      },
-      {
-        name: "Chocolate",
-        hex: "#D2691E"
-      },
-      {
-        name: "Verde Escuro",
-        hex: "#013220"
-      },
-      {
-        name: "Rosa",
-        hex: "#e8a0b0"
-      }
-    ],
-    sizes: [
-      "UNICO"
-    ],
+    colors: [{name:"Off White",hex:"#f5f5f5"},{name:"Preto",hex:"#1a1a1a"},{name:"Cinza Claro",hex:"#E0E0E0"},{name:"Vinho",hex:"#722F37"},{name:"Chocolate",hex:"#D2691E"},{name:"Verde Escuro",hex:"#013220"},{name:"Rosa",hex:"#e8a0b0"}],
+    sizes: ["UNICO"],
     unavailable: [],
     badge: null
   },
@@ -1175,37 +834,10 @@ const PRODUCTS = [
     category: "feminino",
     price: 149.99,
     emoji: "👗",
-    img: [
-      "fotos/moni_1.jpeg",
-      "fotos/moni_2.jpeg",
-      "fotos/moni_3.jpeg",
-      "fotos/moni_4.jpeg"
-    ],
+    img: ["fotos/moni_1.jpeg","fotos/moni_2.jpeg","fotos/moni_3.jpeg","fotos/moni_4.jpeg"],
     desc: "",
-    colors: [
-      {
-        name: "Cinza",
-        hex: "#808080"
-      },
-      {
-        name: "Rosa Bebê",
-        hex: "#f72ba2"
-      },
-      {
-        name: "Preto",
-        hex: "#1a1a1a"
-      },
-      {
-        name: "Bege",
-        hex: "#c8b49a"
-      }
-    ],
-    sizes: [
-      "P",
-      "M",
-      "G",
-      "GG"
-    ],
+    colors: [{name:"Cinza",hex:"#808080"},{name:"Rosa Bebê",hex:"#f72ba2"},{name:"Preto",hex:"#1a1a1a"},{name:"Bege",hex:"#c8b49a"}],
+    sizes: ["P","M","G","GG"],
     unavailable: [],
     badge: "Novo"
   },
@@ -1215,37 +847,10 @@ const PRODUCTS = [
     category: "feminino",
     price: 149.9,
     emoji: "👗",
-    img: [
-      "fotos/moad_1.jpeg",
-      "fotos/moad_2.jpeg",
-      "fotos/moad_3.jpeg",
-      "fotos/moad_4.jpeg"
-    ],
+    img: ["fotos/moad_1.jpeg","fotos/moad_2.jpeg","fotos/moad_3.jpeg","fotos/moad_4.jpeg"],
     desc: "",
-    colors: [
-      {
-        name: "Cinza",
-        hex: "#808080"
-      },
-      {
-        name: "Preto",
-        hex: "#1a1a1a"
-      },
-      {
-        name: "Bege",
-        hex: "#c8b49a"
-      },
-      {
-        name: "Rosa Bebê",
-        hex: "#f72ba2"
-      }
-    ],
-    sizes: [
-      "P",
-      "M",
-      "G",
-      "GG"
-    ],
+    colors: [{name:"Cinza",hex:"#808080"},{name:"Preto",hex:"#1a1a1a"},{name:"Bege",hex:"#c8b49a"},{name:"Rosa Bebê",hex:"#f72ba2"}],
+    sizes: ["P","M","G","GG"],
     unavailable: [],
     badge: "Novo"
   },
@@ -1255,37 +860,10 @@ const PRODUCTS = [
     category: "feminino",
     price: 149.9,
     emoji: "👗",
-    img: [
-      "fotos/mopu_1.jpeg",
-      "fotos/mopu_2.jpeg",
-      "fotos/mopu_3.jpeg",
-      "fotos/mopu_4.jpeg"
-    ],
+    img: ["fotos/mopu_1.jpeg","fotos/mopu_2.jpeg","fotos/mopu_3.jpeg","fotos/mopu_4.jpeg"],
     desc: "",
-    colors: [
-      {
-        name: "Cinza",
-        hex: "#808080"
-      },
-      {
-        name: "Preto",
-        hex: "#1a1a1a"
-      },
-      {
-        name: "Bege",
-        hex: "#c8b49a"
-      },
-      {
-        name: "Rosa Bebê",
-        hex: "#f72ba2"
-      }
-    ],
-    sizes: [
-      "P",
-      "M",
-      "G",
-      "GG"
-    ],
+    colors: [{name:"Cinza",hex:"#808080"},{name:"Preto",hex:"#1a1a1a"},{name:"Bege",hex:"#c8b49a"},{name:"Rosa Bebê",hex:"#f72ba2"}],
+    sizes: ["P","M","G","GG"],
     unavailable: [],
     badge: "Novo"
   }
@@ -1300,6 +878,27 @@ let qty = 1;
 let carouselIndex = 0;
 let carouselImages = [];
 
+// ---------- SCROLL RESTORE ----------
+// Salva a posição do scroll antes de ir pro produto
+function saveScrollPosition() {
+  sessionStorage.setItem('catalogScrollY', window.scrollY);
+}
+
+// Restaura a posição salva ao voltar pro catálogo
+function restoreScrollPosition() {
+  const saved = sessionStorage.getItem('catalogScrollY');
+  if (saved !== null) {
+    // Usa requestAnimationFrame para garantir que o DOM já renderizou
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        window.scrollTo(0, parseInt(saved, 10));
+      });
+    });
+    sessionStorage.removeItem('catalogScrollY');
+  }
+}
+
+// ---------- HELPERS ----------
 function formatPrice(p) {
   return "R$ " + p.toFixed(2).replace(".", ",");
 }
@@ -1328,11 +927,17 @@ function categoryLabel(cat) {
   return map[cat] || cat;
 }
 
+// Verifica se TODOS os tamanhos estão indisponíveis
+function isFullySoldOut(p) {
+  if (!p.sizes || p.sizes.length === 0) return false;
+  return p.sizes.every(s => p.unavailable.includes(s));
+}
+
 // ---- PAGES ----
 function goHome() {
   document.getElementById("homePage").classList.add("active");
   document.getElementById("productPage").classList.remove("active");
-  window.scrollTo(0, 0);
+  restoreScrollPosition();
 }
 
 function goProduct() {
@@ -1346,6 +951,7 @@ function renderGrid(filter) {
   const grid = document.getElementById("productGrid");
   const filtered = filter === 'all' ? PRODUCTS : PRODUCTS.filter(p => p.category === filter);
   grid.innerHTML = filtered.map(p => {
+    const soldOut = isFullySoldOut(p);
     const colorDots = (p.colors || []).slice(0, 4).map(c =>
       `<span class="card-color-dot" style="${swatchStyle(c.hex)}" title="${c.name}"></span>`
     ).join('');
@@ -1353,17 +959,27 @@ function renderGrid(filter) {
     const imgHtml = img
       ? `<img src="${img}" alt="${p.name}" onerror="this.style.display='none';this.nextElementSibling.style.display='block'"><span class="emoji-fallback" style="display:none">${p.emoji}</span>`
       : `<span class="emoji-fallback">${p.emoji}</span>`;
+
+    // Overlay de marca d'água apenas quando totalmente indisponível
+    const soldOutOverlay = soldOut
+      ? `<div class="sold-out-overlay"><span>Indisponível</span></div>`
+      : '';
+
+    // Card clicável só se não estiver totalmente indisponível
+    const clickHandler = soldOut ? '' : `onclick="openProduct(${p.id})"`;
+
     return `
-    <div class="card" onclick="openProduct(${p.id})">
+    <div class="card${soldOut ? ' sold-out' : ''}" ${clickHandler}>
       <div class="card-img">
-        ${p.badge ? `<div class="badge">${p.badge}</div>` : ""}
+        ${p.badge && !soldOut ? `<div class="badge">${p.badge}</div>` : ""}
         ${imgHtml}
-        ${colorDots ? `<div class="card-colors">${colorDots}</div>` : ""}
+        ${soldOutOverlay}
+        ${colorDots && !soldOut ? `<div class="card-colors">${colorDots}</div>` : ""}
       </div>
       <div class="card-info">
         <div class="card-name">${p.name}</div>
         <div class="card-sub">${categoryLabel(p.category)}</div>
-        <div class="card-price">${formatPrice(p.price)}</div>
+        <div class="card-price">${soldOut ? 'Indisponível' : formatPrice(p.price)}</div>
       </div>
     </div>`;
   }).join("");
@@ -1400,11 +1016,9 @@ function buildCarousel(p) {
 function updateCarouselUI() {
   const track = document.getElementById("carouselTrack");
   track.style.transform = `translateX(-${carouselIndex * 100}%)`;
-
   document.querySelectorAll(".carousel-dot").forEach((d, i) => {
     d.classList.toggle("active", i === carouselIndex);
   });
-
   const prev = document.getElementById("carouselPrev");
   const next = document.getElementById("carouselNext");
   const total = carouselImages.length;
@@ -1434,6 +1048,9 @@ function carouselGo(i) {
 
 // ---- PRODUCT PAGE ----
 function openProduct(id) {
+  // Salva posição do scroll ANTES de trocar de página
+  saveScrollPosition();
+
   const p = PRODUCTS.find(x => x.id === id);
   currentProduct = p;
   selectedColor = null;
