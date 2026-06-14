@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-<title>CatÃÂÃÂ¡logo ÃÂ¢ÃÂÃÂ Encomendas</title>
+<title>Catálogo — Encomendas</title>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
   :root {
@@ -131,7 +131,7 @@
   }
   .card:hover { transform: translateY(-2px); border-color: var(--gold); }
 
-  /* Card indisponÃÂÃÂ­vel: sem hover */
+  /* Card indisponível: sem hover */
   .card.sold-out { cursor: default; }
   .card.sold-out:hover { transform: none; border-color: var(--border); }
 
@@ -155,14 +155,14 @@
     background: linear-gradient(to top, var(--surface), transparent);
   }
 
-  /* GRAYSCALE para cards totalmente indisponÃÂÃÂ­veis */
+  /* GRAYSCALE para cards totalmente indisponíveis */
   .card.sold-out .card-img img,
   .card.sold-out .card-img .emoji-fallback {
     filter: grayscale(100%);
     opacity: 0.55;
   }
 
-  /* MARCA D'ÃÂÃÂGUA "INDISPONÃÂÃÂVEL" */
+  /* MARCA D'ÁGUA "INDISPONÍVEL" */
   .sold-out-overlay {
     position: absolute;
     inset: 0;
@@ -223,7 +223,7 @@
   .card-sub { font-size: 11px; color: var(--muted); margin-bottom: 8px; }
   .card-price { font-family: 'Playfair Display', serif; font-size: 16px; color: var(--gold); }
 
-  /* PreÃÂÃÂ§o muted quando indisponÃÂÃÂ­vel */
+  /* Preço muted quando indisponível */
   .card.sold-out .card-price { color: var(--muted); }
 
   /* PRODUCT PAGE */
@@ -388,7 +388,7 @@
   }
 
   .color-option input[type="radio"]:checked + .color-swatch::after {
-    content: 'ÃÂ¢ÃÂÃÂ';
+    content: '✓';
     position: absolute;
     inset: 0;
     display: flex;
@@ -582,7 +582,7 @@
 <header>
   <div class="logo" onclick="goHome()">GG<span>Imports</span></div>
   <button class="cart-btn" onclick="openCart()">
-    ÃÂ°ÃÂÃÂÃÂÃÂ¯ÃÂ¸ÃÂ Sacola
+    🛍️ Sacola
     <span class="cart-count" id="cartCount">0</span>
   </button>
 </header>
@@ -590,9 +590,9 @@
 <!-- HOME PAGE -->
 <div class="page active" id="homePage">
   <div class="hero">
-    <h1>Escolha sua peÃÂÃÂ§a<br>e faÃÂÃÂ§a seu pedido</h1>
+    <h1>Escolha sua peça<br>e faça seu pedido</h1>
     <div class="gold-line"></div>
-    <p>Selecione modelo, cor, tamanho e quantidade ÃÂ¢ÃÂÃÂ simples assim.</p>
+    <p>Selecione modelo, cor, tamanho e quantidade — simples assim.</p>
   </div>
 
   <div class="filters" id="filters">
@@ -610,14 +610,14 @@
     <!-- CAROUSEL -->
     <div class="carousel" id="carousel">
       <div class="carousel-track" id="carouselTrack"></div>
-      <button class="carousel-btn prev hidden" id="carouselPrev" onclick="carouselMove(-1)">ÃÂ¢ÃÂÃÂ¹</button>
-      <button class="carousel-btn next hidden" id="carouselNext" onclick="carouselMove(1)">ÃÂ¢ÃÂÃÂº</button>
+      <button class="carousel-btn prev hidden" id="carouselPrev" onclick="carouselMove(-1)">‹</button>
+      <button class="carousel-btn next hidden" id="carouselNext" onclick="carouselMove(1)">›</button>
       <div class="carousel-dots" id="carouselDots"></div>
     </div>
 
     <div class="back-bar">
       <button class="back-btn" onclick="goHome()">
-        ÃÂ¢ÃÂÃÂ Voltar ao catÃÂÃÂ¡logo
+        ← Voltar ao catálogo
       </button>
     </div>
 
@@ -641,13 +641,13 @@
       <div class="qty-row">
         <span class="qty-label">Quantidade</span>
         <div class="qty-ctrl">
-          <button onclick="changeQty(-1)">ÃÂ¢ÃÂÃÂ</button>
+          <button onclick="changeQty(-1)">−</button>
           <span class="qty-val" id="qtyVal">1</span>
           <button onclick="changeQty(1)">+</button>
         </div>
       </div>
       <div class="validation-hint" id="validationHint"></div>
-      <button class="add-btn" id="addBtn" onclick="addToCart()">Adicionar ÃÂÃÂ  sacola</button>
+      <button class="add-btn" id="addBtn" onclick="addToCart()">Adicionar à sacola</button>
     </div>
   </div>
 </div>
@@ -656,8 +656,8 @@
 <div class="cart-overlay" id="cartOverlay" onclick="handleOverlayClick(event, 'cartOverlay')">
   <div class="cart-drawer">
     <div class="cart-header">
-      <div class="cart-title">Minha Sacola ÃÂ°ÃÂÃÂÃÂÃÂ¯ÃÂ¸ÃÂ</div>
-      <button class="close-btn" onclick="closeCart()">ÃÂ¢ÃÂÃÂ</button>
+      <div class="cart-title">Minha Sacola 🛍️</div>
+      <button class="close-btn" onclick="closeCart()">✕</button>
     </div>
     <div class="cart-items" id="cartItems"></div>
     <div class="cart-footer" id="cartFooter" style="display:none">
@@ -669,7 +669,7 @@
         <div class="form-title">Seus dados para o pedido</div>
         <input class="input-field" id="clientName" placeholder="Seu nome completo" type="text">
         <input class="input-field" id="clientPhone" placeholder="Seu WhatsApp (11) 99999-9999" type="tel">
-        <textarea class="input-field" id="clientObs" placeholder="ObservaÃÂÃÂ§ÃÂÃÂµes (opcional): prazo, dÃÂÃÂºvidas, etc."></textarea>
+        <textarea class="input-field" id="clientObs" placeholder="Observações (opcional): prazo, dúvidas, etc."></textarea>
         <button class="whatsapp-btn" onclick="sendOrder()">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="white"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
           Enviar pedido via WhatsApp
@@ -686,648 +686,186 @@ const WHATSAPP_NUMBER = "5511953281826";
 
 const PRODUCTS = [
   {
-    "id": 1,
-    "name": "BabyTee Gola Alta",
-    "category": "feminino",
-    "price": 65,
-    "emoji": "👗",
-    "img": [
-      "fotos/babytee.jpeg",
-      "fotos/babytee2.jpeg"
-    ],
-    "desc": "Peça coringa para todas as estações. Tamanho único veste do 36 ao 40.",
-    "colors": [
-      {
-        "name": "Preto",
-        "hex": "#1a1a1a"
-      },
-      {
-        "name": "Cinza",
-        "hex": "#808080"
-      },
-      {
-        "name": "Off-White",
-        "hex": "#e8dcc8"
-      },
-      {
-        "name": "Verde Escuro",
-        "hex": "#013220"
-      },
-      {
-        "name": "Rosa",
-        "hex": "#e8a0b0"
-      },
-      {
-        "name": "Chocolate",
-        "hex": "#D2691E"
-      }
-    ],
-    "sizes": [
-      "Tamanho único"
-    ],
-    "unavailable": [],
-    "badge": "Novo"
+    id: 1,
+    name: "BabyTee Gola Alta",
+    category: "feminino",
+    price: 65,
+    emoji: "👗",
+    img: ["fotos/babytee.jpeg","fotos/babytee2.jpeg"],
+    desc: "Peça coringa para todas as estações. Tamanho único veste do 36 ao 40.",
+    colors: [{name:"Preto",hex:"#1a1a1a"},{name:"Cinza",hex:"#808080"},{name:"Off-White",hex:"#e8dcc8"},{name:"Verde Escuro",hex:"#013220"},{name:"Rosa",hex:"#e8a0b0"},{name:"Chocolate",hex:"#D2691E"}],
+    sizes: ["Tamanho único"],
+    unavailable: [],
+    badge: "Novo"
   },
   {
-    "id": 2,
-    "name": "Blusa Cropped - Poliamida",
-    "category": "feminino",
-    "price": 59.9,
-    "emoji": "👚",
-    "img": [
-      "fotos/cropped.jpeg"
-    ],
-    "desc": "Forro duplo nos seios, Multiformas (várias formas de uso), Tamanho único (36 ao 40/42).",
-    "colors": [
-      {
-        "name": "Preto",
-        "hex": "#1a1a1a"
-      },
-      {
-        "name": "Chocolate",
-        "hex": "#D2691E"
-      },
-      {
-        "name": "Cinza Claro",
-        "hex": "#E0E0E0"
-      },
-      {
-        "name": "Azul Escuro",
-        "hex": "#000080"
-      },
-      {
-        "name": "Rosa Neon",
-        "hex": "#FF13F0"
-      },
-      {
-        "name": "Azul Turquesa",
-        "hex": "#30D5C8"
-      },
-      {
-        "name": "Rosa",
-        "hex": "#e8a0b0"
-      },
-      {
-        "name": "Verde Claro",
-        "hex": "#90EE90"
-      }
-    ],
-    "sizes": [
-      "Tamanho único"
-    ],
-    "unavailable": [],
-    "badge": null
+    id: 2,
+    name: "Blusa Cropped - Poliamida",
+    category: "feminino",
+    price: 59.9,
+    emoji: "👚",
+    img: ["fotos/cropped.jpeg"],
+    desc: "Forro duplo nos seios, Multiformas (várias formas de uso), Tamanho único (36 ao 40/42).",
+    colors: [{name:"Preto",hex:"#1a1a1a"},{name:"Chocolate",hex:"#D2691E"},{name:"Cinza Claro",hex:"#E0E0E0"},{name:"Azul Escuro",hex:"#000080"},{name:"Rosa Neon",hex:"#FF13F0"},{name:"Azul Turquesa",hex:"#30D5C8"},{name:"Rosa",hex:"#e8a0b0"},{name:"Verde Claro",hex:"#90EE90"}],
+    sizes: ["Tamanho único"],
+    unavailable: [],
+    badge: null
   },
   {
-    "id": 3,
-    "name": "Conjunto Juliet",
-    "category": "feminino",
-    "price": 145,
-    "emoji": "👖",
-    "img": "fotos/juliet.jpeg",
-    "desc": "Conjunto juliet - alfaiataria.",
-    "colors": [
-      {
-        "name": "Preto",
-        "hex": "#1a1a1a"
-      },
-      {
-        "name": "Amarelo",
-        "hex": "#FFFF00"
-      },
-      {
-        "name": "Verde Menta",
-        "hex": "#ADEBB3"
-      }
-    ],
-    "sizes": [
-      "P",
-      "M",
-      "G",
-      "GG"
-    ],
-    "unavailable": [],
-    "badge": "Mais pedido"
+    id: 3,
+    name: "Conjunto Juliet",
+    category: "feminino",
+    price: 145,
+    emoji: "👖",
+    img: "fotos/juliet.jpeg",
+    desc: "Conjunto juliet - alfaiataria.",
+    colors: [{name:"Preto",hex:"#1a1a1a"},{name:"Amarelo",hex:"#FFFF00"},{name:"Verde Menta",hex:"#ADEBB3"}],
+    sizes: ["P","M","G","GG"],
+    unavailable: [],
+    badge: "Mais pedido"
   },
   {
-    "id": 4,
-    "name": "Calça Pantalona - Alfaiataria",
-    "category": "feminino",
-    "price": 80,
-    "emoji": "👕",
-    "img": "fotos/pantalona.jpeg",
-    "desc": "Calça Pantalona básica- alfaiataria.",
-    "colors": [
-      {
-        "name": "Branco",
-        "hex": "#f0ece4"
-      },
-      {
-        "name": "Preto",
-        "hex": "#1a1a1a"
-      },
-      {
-        "name": "Off-White",
-        "hex": "#e8dcc8"
-      },
-      {
-        "name": "Marrom",
-        "hex": "#964B00"
-      },
-      {
-        "name": "Cinza",
-        "hex": "#808080"
-      },
-      {
-        "name": "Cinza Chumbo",
-        "hex": "#818589"
-      },
-      {
-        "name": "Azul Marinho",
-        "hex": "#243055"
-      },
-      {
-        "name": "Bege",
-        "hex": "#c8b49a"
-      },
-      {
-        "name": "Bege Escuro",
-        "hex": "#AC9362"
-      },
-      {
-        "name": "Amarelo",
-        "hex": "#FFFF00"
-      },
-      {
-        "name": "Verde Militar",
-        "hex": "#4B5320"
-      },
-      {
-        "name": "Verde Bandeira",
-        "hex": "#009440"
-      },
-      {
-        "name": "Terra Cota",
-        "hex": "#E35336"
-      },
-      {
-        "name": "Vinho",
-        "hex": "#722F37"
-      },
-      {
-        "name": "Vermelho",
-        "hex": "#FF0000"
-      }
-    ],
-    "sizes": [
-      "P",
-      "M",
-      "G",
-      "GG",
-      "G1"
-    ],
-    "unavailable": [
-      "G1"
-    ],
-    "badge": null
+    id: 4,
+    name: "Calça Pantalona - Alfaiataria",
+    category: "feminino",
+    price: 80,
+    emoji: "👕",
+    img: "fotos/pantalona.jpeg",
+    desc: "Calça Pantalona básica- alfaiataria.",
+    colors: [{name:"Branco",hex:"#f0ece4"},{name:"Preto",hex:"#1a1a1a"},{name:"Off-White",hex:"#e8dcc8"},{name:"Marrom",hex:"#964B00"},{name:"Cinza",hex:"#808080"},{name:"Cinza Chumbo",hex:"#818589"},{name:"Azul Marinho",hex:"#243055"},{name:"Bege",hex:"#c8b49a"},{name:"Bege Escuro",hex:"#AC9362"},{name:"Amarelo",hex:"#FFFF00"},{name:"Verde Militar",hex:"#4B5320"},{name:"Verde Bandeira",hex:"#009440"},{name:"Terra Cota",hex:"#E35336"},{name:"Vinho",hex:"#722F37"},{name:"Vermelho",hex:"#FF0000"}],
+    sizes: ["P","M","G","GG","G1"],
+    unavailable: ["G1"],
+    badge: null
   },
   {
-    "id": 5,
-    "name": "Camiseta Brasil - Masculina.",
-    "category": "masculino",
-    "price": 160,
-    "emoji": "🩳",
-    "img": "fotos/brma_1.jpg",
-    "desc": "TAILANDESA BRASIL AZUL - MODELO TORCEDOR. ‼️Logo e brasão bordados.‼️Acabamento premium, idêntica à original.",
-    "colors": [
-      {
-        "name": "Azul",
-        "hex": "#4a6888"
-      }
-    ],
-    "sizes": [
-      "P",
-      "M",
-      "G",
-      "GG",
-      "G1",
-      "G2"
-    ],
-    "unavailable": [
-      "P",
-      "G1",
-      "G2"
-    ],
-    "badge": null
+    id: 5,
+    name: "Camiseta Brasil - Masculina.",
+    category: "masculino",
+    price: 160,
+    emoji: "🩳",
+    img: "fotos/brma_1.jpg",
+    desc: "TAILANDESA BRASIL AZUL - MODELO TORCEDOR. ‼️Logo e brasão bordados.‼️Acabamento premium, idêntica à original.",
+    colors: [{name:"Azul",hex:"#4a6888"}],
+    sizes: ["P","M","G","GG","G1","G2"],
+    unavailable: ["P","G1","G2"],
+    badge: null
   },
   {
-    "id": 6,
-    "name": "Camiseta Brasil - Feminino.",
-    "category": "feminino",
-    "price": 150,
-    "emoji": "🩳",
-    "img": "fotos/brfe_1.jpg",
-    "desc": "TAILANDESA BRASIL AZUL - MODELO TORCEDOR. ‼️Logo e brasão bordados.‼️Acabamento premium, idêntica à original.",
-    "colors": [
-      {
-        "name": "Azul",
-        "hex": "#4a6888"
-      }
-    ],
-    "sizes": [
-      "P",
-      "M",
-      "G",
-      "GG",
-      "G1",
-      "G2"
-    ],
-    "unavailable": [
-      "G2",
-      "P",
-      "M",
-      "GG",
-      "G1",
-      "G"
-    ],
-    "badge": null
+    id: 6,
+    name: "Camiseta Brasil - Feminino.",
+    category: "feminino",
+    price: 150,
+    emoji: "🩳",
+    img: "fotos/brfe_1.jpg",
+    desc: "TAILANDESA BRASIL AZUL - MODELO TORCEDOR. ‼️Logo e brasão bordados.‼️Acabamento premium, idêntica à original.",
+    colors: [{name:"Azul",hex:"#4a6888"}],
+    sizes: ["P","M","G","GG","G1","G2"],
+    unavailable: ["G2","P","M","G","GG","G1"],
+    badge: null
   },
   {
-    "id": 7,
-    "name": "Colete Social - Alfaiataria",
-    "category": "feminino",
-    "price": 60,
-    "emoji": "👗",
-    "img": [
-      "fotos/co_1.jpeg",
-      "fotos/co_2.jpeg"
-    ],
-    "desc": "",
-    "colors": [
-      {
-        "name": "Branco",
-        "hex": "#ffffff"
-      },
-      {
-        "name": "Off White",
-        "hex": "#f5f5f5"
-      },
-      {
-        "name": "Preto",
-        "hex": "#000000"
-      },
-      {
-        "name": "Bege Claro",
-        "hex": "#c4a484"
-      },
-      {
-        "name": "Bege Escuro",
-        "hex": "#d5ac85"
-      },
-      {
-        "name": "Vermelho",
-        "hex": "#ff0000"
-      },
-      {
-        "name": "Terra Cota",
-        "hex": "#c58544"
-      },
-      {
-        "name": "Azul Bebê",
-        "hex": "#3c6ee2"
-      },
-      {
-        "name": "Rosa Bebê",
-        "hex": "#f72ba2"
-      }
-    ],
-    "sizes": [
-      "P",
-      "M",
-      "G",
-      "GG"
-    ],
-    "unavailable": [],
-    "badge": null
+    id: 7,
+    name: "Colete Social - Alfaiataria",
+    category: "feminino",
+    price: 60,
+    emoji: "👗",
+    img: ["fotos/co_1.jpeg","fotos/co_2.jpeg"],
+    desc: "",
+    colors: [{name:"Branco",hex:"#ffffff"},{name:"Off White",hex:"#f5f5f5"},{name:"Preto",hex:"#000000"},{name:"Bege Claro",hex:"#c4a484"},{name:"Bege Escuro",hex:"#d5ac85"},{name:"Vermelho",hex:"#ff0000"},{name:"Terra Cota",hex:"#c58544"},{name:"Azul Bebê",hex:"#3c6ee2"},{name:"Rosa Bebê",hex:"#f72ba2"}],
+    sizes: ["P","M","G","GG"],
+    unavailable: [],
+    badge: null
   },
   {
-    "id": 8,
-    "name": "Shorts Lacoste - Modelo Basico",
-    "category": "masculino",
-    "price": 70,
-    "emoji": "👗",
-    "img": [
-      "fotos/lac_1.jpeg",
-      "fotos/lac_2.jpeg",
-      "fotos/lac_3.jpeg",
-      "fotos/lac_4.jpeg",
-      "fotos/lac_5.jpeg",
-      "fotos/lac_6.jpeg",
-      "fotos/lac_7.jpeg",
-      "fotos/lac_8.jpeg"
-    ],
-    "desc": "",
-    "colors": [
-      {
-        "name": "Branco",
-        "hex": "#ffffff"
-      },
-      {
-        "name": "Preto",
-        "hex": "#000000"
-      },
-      {
-        "name": "Verde Claro",
-        "hex": "#00a80b"
-      },
-      {
-        "name": "Azul Marinho",
-        "hex": "#0050d1"
-      },
-      {
-        "name": "Azul Bebê",
-        "hex": "#479bf5"
-      },
-      {
-        "name": "Verde Musgo",
-        "hex": "#0e7500"
-      },
-      {
-        "name": "Vermelho",
-        "hex": "#db0000"
-      },
-      {
-        "name": "Azul Royal",
-        "hex": "#2b00ff"
-      }
-    ],
-    "sizes": [
-      "P",
-      "M",
-      "G",
-      "GG"
-    ],
-    "unavailable": [
-      "P"
-    ],
-    "badge": "Promoção"
+    id: 8,
+    name: "Shorts Lacoste - Modelo Basico",
+    category: "masculino",
+    price: 70,
+    emoji: "👗",
+    img: ["fotos/lac_1.jpeg","fotos/lac_2.jpeg","fotos/lac_3.jpeg","fotos/lac_4.jpeg","fotos/lac_5.jpeg","fotos/lac_6.jpeg","fotos/lac_7.jpeg","fotos/lac_8.jpeg"],
+    desc: "",
+    colors: [{name:"Branco",hex:"#ffffff"},{name:"Preto",hex:"#000000"},{name:"Verde Claro",hex:"#00a80b"},{name:"Azul Marinho",hex:"#0050d1"},{name:"Azul Bebê",hex:"#479bf5"},{name:"Verde Musgo",hex:"#0e7500"},{name:"Vermelho",hex:"#db0000"},{name:"Azul Royal",hex:"#2b00ff"}],
+    sizes: ["P","M","G","GG"],
+    unavailable: ["P"],
+    badge: "Promoção"
   },
   {
-    "id": 9,
-    "name": "Shorts Boss",
-    "category": "masculino",
-    "price": 70,
-    "emoji": "👗",
-    "img": [
-      "fotos/boss_1.jpeg",
-      "fotos/boss_2.jpeg",
-      "fotos/boss_3.jpeg",
-      "fotos/boss_4.jpeg",
-      "fotos/boss_5.jpeg",
-      "fotos/boss_6.jpeg"
-    ],
-    "desc": "",
-    "colors": [
-      {
-        "name": "Branco",
-        "hex": "#ffffff"
-      },
-      {
-        "name": "Preto",
-        "hex": "#000000"
-      },
-      {
-        "name": "Azul Royal",
-        "hex": "#2b00ff"
-      },
-      {
-        "name": "Azul Bebê",
-        "hex": "#3c6ee2"
-      },
-      {
-        "name": "Azul Marinho",
-        "hex": "#243055"
-      }
-    ],
-    "sizes": [
-      "P",
-      "M",
-      "G",
-      "GG"
-    ],
-    "unavailable": [
-      "P"
-    ],
-    "badge": "Promoção"
+    id: 9,
+    name: "Shorts Boss",
+    category: "masculino",
+    price: 70,
+    emoji: "👗",
+    img: ["fotos/boss_1.jpeg","fotos/boss_2.jpeg","fotos/boss_3.jpeg","fotos/boss_4.jpeg","fotos/boss_5.jpeg","fotos/boss_6.jpeg"],
+    desc: "",
+    colors: [{name:"Branco",hex:"#ffffff"},{name:"Preto",hex:"#000000"},{name:"Azul Royal",hex:"#2b00ff"},{name:"Azul Bebê",hex:"#3c6ee2"},{name:"Azul Marinho",hex:"#243055"}],
+    sizes: ["P","M","G","GG"],
+    unavailable: ["P"],
+    badge: "Promoção"
   },
   {
-    "id": 10,
-    "name": "Shorts Emporio Armani",
-    "category": "masculino",
-    "price": 70,
-    "emoji": "👗",
-    "img": [
-      "fotos/ea_1.jpeg",
-      "fotos/ea_2.jpeg"
-    ],
-    "desc": "",
-    "colors": [
-      {
-        "name": "Preto",
-        "hex": "#1a1a1a"
-      },
-      {
-        "name": "Cinza Escuro",
-        "hex": "#4f4f4f"
-      },
-      {
-        "name": "Vermelho",
-        "hex": "#FF0000"
-      },
-      {
-        "name": "Bege Claro",
-        "hex": "#c4a484"
-      }
-    ],
-    "sizes": [
-      "P",
-      "M",
-      "G",
-      "GG"
-    ],
-    "unavailable": [
-      "P"
-    ],
-    "badge": "Promoção"
+    id: 10,
+    name: "Shorts Emporio Armani",
+    category: "masculino",
+    price: 70,
+    emoji: "👗",
+    img: ["fotos/ea_1.jpeg","fotos/ea_2.jpeg"],
+    desc: "",
+    colors: [{name:"Preto",hex:"#1a1a1a"},{name:"Cinza Escuro",hex:"#4f4f4f"},{name:"Vermelho",hex:"#FF0000"},{name:"Bege Claro",hex:"#c4a484"}],
+    sizes: ["P","M","G","GG"],
+    unavailable: ["P"],
+    badge: "Promoção"
   },
   {
-    "id": 11,
-    "name": "Cropped Lumi",
-    "category": "feminino",
-    "price": 65,
-    "emoji": "👗",
-    "img": [
-      "fotos/lu_1.jpeg",
-      "fotos/lu_2.jpeg",
-      "fotos/lu_3.jpeg",
-      "fotos/lu_4.jpeg"
-    ],
-    "desc": "Diferenciais:\n* Abertura frontal moderna\n* Detalhe no dedo estilo gringa\n* Manga longa\n* Alta elasticidade\n* Tecido confortável e encorpado\n* Modelagem que valoriza o corpo",
-    "colors": [
-      {
-        "name": "Off White",
-        "hex": "#f5f5f5"
-      },
-      {
-        "name": "Preto",
-        "hex": "#1a1a1a"
-      },
-      {
-        "name": "Cinza Claro",
-        "hex": "#E0E0E0"
-      },
-      {
-        "name": "Vinho",
-        "hex": "#722F37"
-      },
-      {
-        "name": "Chocolate",
-        "hex": "#D2691E"
-      },
-      {
-        "name": "Verde Escuro",
-        "hex": "#013220"
-      },
-      {
-        "name": "Rosa",
-        "hex": "#e8a0b0"
-      }
-    ],
-    "sizes": [
-      "UNICO"
-    ],
-    "unavailable": [],
-    "badge": null
+    id: 11,
+    name: "Cropped Lumi",
+    category: "feminino",
+    price: 65,
+    emoji: "👗",
+    img: ["fotos/lu_1.jpeg","fotos/lu_2.jpeg","fotos/lu_3.jpeg","fotos/lu_4.jpeg"],
+    desc: "Diferenciais:\n* Abertura frontal moderna\n* Detalhe no dedo estilo gringa\n* Manga longa\n* Alta elasticidade\n* Tecido confortável e encorpado\n* Modelagem que valoriza o corpo",
+    colors: [{name:"Off White",hex:"#f5f5f5"},{name:"Preto",hex:"#1a1a1a"},{name:"Cinza Claro",hex:"#E0E0E0"},{name:"Vinho",hex:"#722F37"},{name:"Chocolate",hex:"#D2691E"},{name:"Verde Escuro",hex:"#013220"},{name:"Rosa",hex:"#e8a0b0"}],
+    sizes: ["UNICO"],
+    unavailable: [],
+    badge: null
   },
   {
-    "id": 12,
-    "name": "Moletom Feminino Nike",
-    "category": "feminino",
-    "price": 149.99,
-    "emoji": "👗",
-    "img": [
-      "fotos/moni_1.jpeg",
-      "fotos/moni_2.jpeg",
-      "fotos/moni_3.jpeg",
-      "fotos/moni_4.jpeg"
-    ],
-    "desc": "",
-    "colors": [
-      {
-        "name": "Cinza",
-        "hex": "#808080"
-      },
-      {
-        "name": "Rosa Bebê",
-        "hex": "#f72ba2"
-      },
-      {
-        "name": "Preto",
-        "hex": "#1a1a1a"
-      },
-      {
-        "name": "Bege",
-        "hex": "#c8b49a"
-      }
-    ],
-    "sizes": [
-      "P",
-      "M",
-      "G",
-      "GG"
-    ],
-    "unavailable": [],
-    "badge": "Novo"
+    id: 12,
+    name: "Moletom Feminino Nike",
+    category: "feminino",
+    price: 149.99,
+    emoji: "👗",
+    img: ["fotos/moni_1.jpeg","fotos/moni_2.jpeg","fotos/moni_3.jpeg","fotos/moni_4.jpeg"],
+    desc: "",
+    colors: [{name:"Cinza",hex:"#808080"},{name:"Rosa Bebê",hex:"#f72ba2"},{name:"Preto",hex:"#1a1a1a"},{name:"Bege",hex:"#c8b49a"}],
+    sizes: ["P","M","G","GG"],
+    unavailable: [],
+    badge: "Novo"
   },
   {
-    "id": 13,
-    "name": "Moletom Feminino Adidas",
-    "category": "feminino",
-    "price": 149.9,
-    "emoji": "👗",
-    "img": [
-      "fotos/moad_1.jpeg",
-      "fotos/moad_2.jpeg",
-      "fotos/moad_3.jpeg",
-      "fotos/moad_4.jpeg"
-    ],
-    "desc": "",
-    "colors": [
-      {
-        "name": "Cinza",
-        "hex": "#808080"
-      },
-      {
-        "name": "Preto",
-        "hex": "#1a1a1a"
-      },
-      {
-        "name": "Bege",
-        "hex": "#c8b49a"
-      },
-      {
-        "name": "Rosa Bebê",
-        "hex": "#f72ba2"
-      }
-    ],
-    "sizes": [
-      "P",
-      "M",
-      "G",
-      "GG"
-    ],
-    "unavailable": [],
-    "badge": "Novo"
+    id: 13,
+    name: "Moletom Feminino Adidas",
+    category: "feminino",
+    price: 149.9,
+    emoji: "👗",
+    img: ["fotos/moad_1.jpeg","fotos/moad_2.jpeg","fotos/moad_3.jpeg","fotos/moad_4.jpeg"],
+    desc: "",
+    colors: [{name:"Cinza",hex:"#808080"},{name:"Preto",hex:"#1a1a1a"},{name:"Bege",hex:"#c8b49a"},{name:"Rosa Bebê",hex:"#f72ba2"}],
+    sizes: ["P","M","G","GG"],
+    unavailable: [],
+    badge: "Novo"
   },
   {
-    "id": 14,
-    "name": "Moletom Feminino Puma",
-    "category": "feminino",
-    "price": 149.9,
-    "emoji": "👗",
-    "img": [
-      "fotos/mopu_1.jpeg",
-      "fotos/mopu_2.jpeg",
-      "fotos/mopu_3.jpeg",
-      "fotos/mopu_4.jpeg"
-    ],
-    "desc": "",
-    "colors": [
-      {
-        "name": "Cinza",
-        "hex": "#808080"
-      },
-      {
-        "name": "Preto",
-        "hex": "#1a1a1a"
-      },
-      {
-        "name": "Bege",
-        "hex": "#c8b49a"
-      },
-      {
-        "name": "Rosa Bebê",
-        "hex": "#f72ba2"
-      }
-    ],
-    "sizes": [
-      "P",
-      "M",
-      "G",
-      "GG"
-    ],
-    "unavailable": [],
-    "badge": "Novo"
+    id: 14,
+    name: "Moletom Feminino Puma",
+    category: "feminino",
+    price: 149.9,
+    emoji: "👗",
+    img: ["fotos/mopu_1.jpeg","fotos/mopu_2.jpeg","fotos/mopu_3.jpeg","fotos/mopu_4.jpeg"],
+    desc: "",
+    colors: [{name:"Cinza",hex:"#808080"},{name:"Preto",hex:"#1a1a1a"},{name:"Bege",hex:"#c8b49a"},{name:"Rosa Bebê",hex:"#f72ba2"}],
+    sizes: ["P","M","G","GG"],
+    unavailable: [],
+    badge: "Novo"
   }
 ];
 
@@ -1341,16 +879,16 @@ let carouselIndex = 0;
 let carouselImages = [];
 
 // ---------- SCROLL RESTORE ----------
-// Salva a posiÃÂÃÂ§ÃÂÃÂ£o do scroll antes de ir pro produto
+// Salva a posição do scroll antes de ir pro produto
 function saveScrollPosition() {
   sessionStorage.setItem('catalogScrollY', window.scrollY);
 }
 
-// Restaura a posiÃÂÃÂ§ÃÂÃÂ£o salva ao voltar pro catÃÂÃÂ¡logo
+// Restaura a posição salva ao voltar pro catálogo
 function restoreScrollPosition() {
   const saved = sessionStorage.getItem('catalogScrollY');
   if (saved !== null) {
-    // Usa requestAnimationFrame para garantir que o DOM jÃÂÃÂ¡ renderizou
+    // Usa requestAnimationFrame para garantir que o DOM já renderizou
     requestAnimationFrame(() => {
       requestAnimationFrame(() => {
         window.scrollTo(0, parseInt(saved, 10));
@@ -1389,7 +927,7 @@ function categoryLabel(cat) {
   return map[cat] || cat;
 }
 
-// Verifica se TODOS os tamanhos estÃÂÃÂ£o indisponÃÂÃÂ­veis
+// Verifica se TODOS os tamanhos estão indisponíveis
 function isFullySoldOut(p) {
   if (!p.sizes || p.sizes.length === 0) return false;
   return p.sizes.every(s => p.unavailable.includes(s));
@@ -1422,12 +960,12 @@ function renderGrid(filter) {
       ? `<img src="${img}" alt="${p.name}" onerror="this.style.display='none';this.nextElementSibling.style.display='block'"><span class="emoji-fallback" style="display:none">${p.emoji}</span>`
       : `<span class="emoji-fallback">${p.emoji}</span>`;
 
-    // Overlay de marca d'ÃÂÃÂ¡gua apenas quando totalmente indisponÃÂÃÂ­vel
+    // Overlay de marca d'água apenas quando totalmente indisponível
     const soldOutOverlay = soldOut
-      ? `<div class="sold-out-overlay"><span>IndisponÃÂÃÂ­vel</span></div>`
+      ? `<div class="sold-out-overlay"><span>Indisponível</span></div>`
       : '';
 
-    // Card clicÃÂÃÂ¡vel sÃÂÃÂ³ se nÃÂÃÂ£o estiver totalmente indisponÃÂÃÂ­vel
+    // Card clicável só se não estiver totalmente indisponível
     const clickHandler = soldOut ? '' : `onclick="openProduct(${p.id})"`;
 
     return `
@@ -1441,7 +979,7 @@ function renderGrid(filter) {
       <div class="card-info">
         <div class="card-name">${p.name}</div>
         <div class="card-sub">${categoryLabel(p.category)}</div>
-        <div class="card-price">${soldOut ? 'IndisponÃÂÃÂ­vel' : formatPrice(p.price)}</div>
+        <div class="card-price">${soldOut ? 'Indisponível' : formatPrice(p.price)}</div>
       </div>
     </div>`;
   }).join("");
@@ -1510,7 +1048,7 @@ function carouselGo(i) {
 
 // ---- PRODUCT PAGE ----
 function openProduct(id) {
-  // Salva posiÃÂÃÂ§ÃÂÃÂ£o do scroll ANTES de trocar de pÃÂÃÂ¡gina
+  // Salva posição do scroll ANTES de trocar de página
   saveScrollPosition();
 
   const p = PRODUCTS.find(x => x.id === id);
@@ -1544,7 +1082,7 @@ function openProduct(id) {
   } else {
     colorSection.style.display = "none";
     colorsEl.style.display = "none";
-    selectedColor = { name: "PadrÃÂÃÂ£o", hex: "#888" };
+    selectedColor = { name: "Padrão", hex: "#888" };
   }
 
   // Sizes
@@ -1559,7 +1097,7 @@ function openProduct(id) {
 
 function selectColor(idx) {
   selectedColor = currentProduct.colors[idx];
-  document.getElementById("colorSelectedLabel").textContent = "ÃÂ¢ÃÂÃÂ " + selectedColor.name;
+  document.getElementById("colorSelectedLabel").textContent = "— " + selectedColor.name;
   checkAddBtn();
 }
 
@@ -1592,7 +1130,7 @@ function addToCart() {
   if (needsColor && !selectedColor) return;
   if (!selectedSize) return;
 
-  const colorKey = selectedColor ? selectedColor.name : "PadrÃÂÃÂ£o";
+  const colorKey = selectedColor ? selectedColor.name : "Padrão";
   const existing = cart.find(i => i.id === currentProduct.id && i.size === selectedSize && i.colorName === colorKey);
   if (existing) {
     existing.qty += qty;
@@ -1600,7 +1138,7 @@ function addToCart() {
     cart.push({ ...currentProduct, size: selectedSize, colorName: colorKey, colorHex: selectedColor ? selectedColor.hex : null, qty });
   }
   updateCartCount();
-  showToast("ÃÂ¢ÃÂÃÂ Adicionado ÃÂÃÂ  sacola!");
+  showToast("✓ Adicionado à sacola!");
   goHome();
 }
 
@@ -1623,7 +1161,7 @@ function renderCart() {
   const el = document.getElementById("cartItems");
   const footer = document.getElementById("cartFooter");
   if (cart.length === 0) {
-    el.innerHTML = `<div class="cart-empty"><span>ÃÂ°ÃÂÃÂÃÂÃÂ¯ÃÂ¸ÃÂ</span>Sua sacola estÃÂÃÂ¡ vazia.<br>Adicione peÃÂÃÂ§as para pedir!</div>`;
+    el.innerHTML = `<div class="cart-empty"><span>🛍️</span>Sua sacola está vazia.<br>Adicione peças para pedir!</div>`;
     footer.style.display = "none";
     return;
   }
@@ -1642,12 +1180,12 @@ function renderCart() {
         <div class="cart-item-meta">
           ${item.colorHex ? `<span class="cart-item-color-dot" ${dotStyle}></span>` : ""}
           <span>${item.colorName}</span>
-          <span>ÃÂÃÂ·</span><span>Tam. ${item.size}</span>
-          <span>ÃÂÃÂ·</span><span>Qtd: ${item.qty}</span>
+          <span>·</span><span>Tam. ${item.size}</span>
+          <span>·</span><span>Qtd: ${item.qty}</span>
         </div>
         <div class="cart-item-price">${formatPrice(item.price * item.qty)}</div>
       </div>
-      <button class="cart-item-remove" onclick="removeItem(${idx})">ÃÂ°ÃÂÃÂÃÂÃÂ¯ÃÂ¸ÃÂ</button>
+      <button class="cart-item-remove" onclick="removeItem(${idx})">🗑️</button>
     </div>`;
   }).join("");
   const total = cart.reduce((s, i) => s + i.price * i.qty, 0);
@@ -1673,31 +1211,31 @@ function sendOrder() {
   const timeStr = now.toLocaleTimeString("pt-BR", { hour: "2-digit", minute: "2-digit" });
 
   let msg = "";
-  msg += `ÃÂ°ÃÂÃÂÃÂ *NOVO PEDIDO ÃÂ¢ÃÂÃÂ GG Imports* ÃÂ°ÃÂÃÂÃÂ\n`;
-  msg += `ÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂ\n\n`;
-  msg += `ÃÂ°ÃÂÃÂÃÂ¤ *Cliente*\n`;
+  msg += `🌟 *NOVO PEDIDO — GG Imports* 🌟\n`;
+  msg += `━━━━━━━━━━━━━━━━━━━━\n\n`;
+  msg += `👤 *Cliente*\n`;
   msg += `   ${name}\n`;
-  msg += `   ÃÂ°ÃÂÃÂÃÂ± ${phone}\n\n`;
-  msg += `ÃÂ°ÃÂÃÂÃÂ¦ *Itens do pedido*\n`;
-  msg += `ÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂ\n`;
+  msg += `   📱 ${phone}\n\n`;
+  msg += `📦 *Itens do pedido*\n`;
+  msg += `━━━━━━━━━━━━━━━━━━━━\n`;
 
   cart.forEach((item, i) => {
     msg += `\n${i + 1}. *${item.name}*\n`;
-    msg += `   ÃÂ°ÃÂÃÂÃÂ¨ Cor: ${item.colorName}\n`;
-    msg += `   ÃÂ°ÃÂÃÂÃÂ Tamanho: ${item.size}\n`;
-    msg += `   ÃÂ°ÃÂÃÂÃÂ¢ Qtd: ${item.qty}x ${formatPrice(item.price)} = *${formatPrice(item.price * item.qty)}*\n`;
+    msg += `   🎨 Cor: ${item.colorName}\n`;
+    msg += `   📐 Tamanho: ${item.size}\n`;
+    msg += `   🔢 Qtd: ${item.qty}x ${formatPrice(item.price)} = *${formatPrice(item.price * item.qty)}*\n`;
   });
 
   const total = cart.reduce((s, i) => s + i.price * i.qty, 0);
-  msg += `\nÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂ\n`;
-  msg += `ÃÂ°ÃÂÃÂÃÂ° *Total estimado: ${formatPrice(total)}*\n`;
-  msg += `ÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂ\n`;
+  msg += `\n━━━━━━━━━━━━━━━━━━━━\n`;
+  msg += `💰 *Total estimado: ${formatPrice(total)}*\n`;
+  msg += `━━━━━━━━━━━━━━━━━━━━\n`;
 
   if (obs) {
-    msg += `\nÃÂ°ÃÂÃÂÃÂ *ObservaÃÂÃÂ§ÃÂÃÂµes:*\n   ${obs}\n`;
+    msg += `\n📝 *Observações:*\n   ${obs}\n`;
   }
 
-  msg += `\nÃÂ°ÃÂÃÂÃÂ Pedido enviado em ${dateStr} ÃÂÃÂ s ${timeStr}`;
+  msg += `\n🕐 Pedido enviado em ${dateStr} às ${timeStr}`;
 
   window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(msg)}`, "_blank");
 }
