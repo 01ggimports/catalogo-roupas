@@ -1,0 +1,1462 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin — GG Imports Catálogo</title>
+<meta name="theme-color" content="#0e0c0a">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0e0c0a; --surface: #1a1713; --surface2: #242018;
+    --border: #2e2820; --gold: #c9a84c; --gold-light: #e8c96a;
+    --cream: #f5efe6; --muted: #7a6e62; --text: #ede8e0;
+    --danger: #c94c4c; --green: #4cad7a; --blue: #4c8ec9;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: var(--bg); color: var(--text); font-family: 'DM Sans', sans-serif; font-size: 14px; min-height: 100vh; }
+
+  header {
+    background: var(--surface); border-bottom: 1px solid var(--border);
+    padding: 14px 24px; display: flex; align-items: center; justify-content: space-between;
+    position: sticky; top: 0; z-index: 100;
+  }
+  .logo { font-family: 'Playfair Display', serif; font-size: 20px; color: var(--gold); }
+  .logo span { font-style: italic; color: var(--cream); }
+  .badge-admin { background: var(--gold); color: #0e0c0a; font-size: 10px; font-weight: 700; padding: 3px 10px; border-radius: 50px; letter-spacing: 0.06em; text-transform: uppercase; margin-left: 10px; }
+
+  .layout { display: grid; grid-template-columns: 320px 1fr; min-height: calc(100vh - 53px); }
+
+  .sidebar {
+    background: var(--surface); border-right: 1px solid var(--border);
+    display: flex; flex-direction: column;
+  }
+  .sidebar-header {
+    padding: 16px; border-bottom: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .sidebar-title { font-size: 12px; font-weight: 500; text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted); }
+  .btn-new {
+    background: var(--gold); color: #0e0c0a; border: none; border-radius: 8px;
+    padding: 6px 12px; font-family: 'DM Sans', sans-serif; font-size: 12px; font-weight: 700;
+    cursor: pointer; display: flex; align-items: center; gap: 5px; transition: background 0.2s;
+  }
+  .btn-new:hover { background: var(--gold-light); }
+
+  .product-list { flex: 1; overflow-y: auto; }
+  .product-list-item {
+    padding: 12px 16px; border-bottom: 1px solid var(--border); cursor: pointer;
+    display: flex; align-items: center; gap: 10px; transition: background 0.15s;
+  }
+  .product-list-item:hover { background: var(--surface2); }
+  .product-list-item.active { background: var(--surface2); border-left: 3px solid var(--gold); padding-left: 13px; }
+  .pli-emoji { font-size: 22px; flex-shrink: 0; }
+  .pli-info { flex: 1; min-width: 0; }
+  .pli-name { font-size: 13px; font-weight: 500; color: var(--cream); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .pli-price { font-size: 11px; color: var(--gold); }
+  .pli-del { background: none; border: none; color: var(--danger); font-size: 16px; cursor: pointer; padding: 4px; opacity: 0.5; transition: opacity 0.2s; flex-shrink: 0; }
+  .pli-del:hover { opacity: 1; }
+  .pli-handle { cursor: grab; color: var(--muted); font-size: 14px; flex-shrink: 0; line-height: 1; user-select: none; touch-action: none; }
+  .pli-handle:active { cursor: grabbing; }
+  .product-list-item.dragging { opacity: 0.4; }
+  .product-list-item.drag-over { box-shadow: inset 0 2px 0 var(--gold); }
+  .product-list-item.pli-unavailable { opacity: 0.55; }
+  .pli-unavail-tag { color: var(--danger); }
+
+  .editor { padding: 24px; overflow-y: auto; }
+  .empty-state { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%; color: var(--muted); gap: 12px; }
+  .empty-state span { font-size: 60px; }
+  .empty-state p { font-size: 13px; text-align: center; }
+
+  .editor-title { font-family: 'Playfair Display', serif; font-size: 22px; color: var(--cream); margin-bottom: 4px; }
+  .editor-sub { font-size: 12px; color: var(--muted); margin-bottom: 24px; }
+
+  .section { background: var(--surface); border: 1px solid var(--border); border-radius: 14px; padding: 18px; margin-bottom: 16px; }
+  .section-title { font-size: 11px; font-weight: 500; text-transform: uppercase; letter-spacing: 0.07em; color: var(--muted); margin-bottom: 14px; display: flex; align-items: center; gap: 6px; }
+
+  .field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px; }
+  .field-row.single { grid-template-columns: 1fr; }
+
+  .field { display: flex; flex-direction: column; gap: 5px; }
+  .field label { font-size: 11px; color: var(--muted); font-weight: 500; letter-spacing: 0.04em; }
+  .field input, .field select, .field textarea {
+    background: var(--surface2); border: 1px solid var(--border); color: var(--cream);
+    border-radius: 8px; padding: 10px 12px; font-family: 'DM Sans', sans-serif; font-size: 13px;
+    outline: none; transition: border-color 0.2s; width: 100%;
+  }
+  .field input:focus, .field select:focus, .field textarea:focus { border-color: var(--gold); }
+  .field input::placeholder, .field textarea::placeholder { color: var(--muted); }
+  .field textarea { resize: vertical; min-height: 64px; }
+  .field select option { background: var(--surface2); }
+
+  .colors-list { display: flex; flex-direction: column; gap: 8px; }
+  .color-row {
+    display: grid; grid-template-columns: 40px 1fr auto;
+    gap: 8px; align-items: center; background: var(--surface2);
+    border: 1px solid var(--border); border-radius: 8px; padding: 8px 10px;
+  }
+  .color-preview-input { width: 36px; height: 36px; border-radius: 50%; border: 2px solid var(--border); cursor: pointer; padding: 0; background: none; overflow: hidden; }
+  .color-preview-input::-webkit-color-swatch-wrapper { padding: 0; }
+  .color-preview-input::-webkit-color-swatch { border: none; border-radius: 50%; }
+  .color-name-input { background: transparent; border: none; color: var(--cream); font-family: 'DM Sans', sans-serif; font-size: 13px; outline: none; width: 100%; }
+  .color-name-input:focus { color: var(--gold); }
+  .btn-remove-color { background: none; border: none; color: var(--danger); font-size: 16px; cursor: pointer; opacity: 0.5; transition: opacity 0.15s; }
+  .btn-remove-color:hover { opacity: 1; }
+  .btn-add-color { background: var(--surface2); border: 1px dashed var(--border); color: var(--muted); border-radius: 8px; padding: 10px; font-family: 'DM Sans', sans-serif; font-size: 12px; cursor: pointer; width: 100%; margin-top: 8px; transition: all 0.2s; }
+  .btn-add-color:hover { border-color: var(--gold); color: var(--gold); }
+
+  .palette-section { margin-top: 14px; padding-top: 12px; border-top: 1px solid var(--border); }
+  .palette-label { font-size: 10px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 8px; }
+  .palette-grid { display: flex; flex-wrap: wrap; gap: 6px; }
+  .palette-dot { width: 28px; height: 28px; border-radius: 50%; cursor: pointer; border: 2px solid transparent; transition: all 0.15s; position: relative; flex-shrink: 0; }
+  .palette-dot:hover { transform: scale(1.2); border-color: var(--gold); }
+  .palette-dot[data-already="true"]::after { content: '✓'; position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; font-size: 12px; color: rgba(255,255,255,0.9); text-shadow: 0 1px 2px rgba(0,0,0,0.6); }
+  .palette-dot[data-already="true"] { border-color: var(--gold); opacity: 0.5; cursor: default; }
+  .palette-tooltip { position: fixed; background: var(--surface); border: 1px solid var(--border); color: var(--cream); font-size: 11px; padding: 4px 8px; border-radius: 6px; pointer-events: none; z-index: 999; white-space: nowrap; display: none; }
+  .size-palette-grid { display: flex; flex-wrap: wrap; gap: 6px; }
+  .size-palette-tag { background: var(--surface2); border: 1px solid var(--border); color: var(--cream); border-radius: 8px; padding: 6px 10px; font-size: 12px; cursor: pointer; font-family: 'DM Sans', sans-serif; transition: all 0.15s; }
+  .size-palette-tag:hover { border-color: var(--gold); color: var(--gold); }
+  .size-palette-tag[data-already="true"] { opacity: 0.4; border-color: var(--gold); cursor: default; }
+
+  .sizes-area { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+  .size-tag { background: var(--surface2); border: 1px solid var(--border); border-radius: 8px; padding: 6px 10px; font-size: 12px; display: flex; align-items: center; gap: 6px; }
+  .size-tag.unavail { opacity: 0.4; }
+  .size-tag-del { background: none; border: none; color: var(--muted); font-size: 13px; cursor: pointer; padding: 0; line-height: 1; }
+  .size-tag-del:hover { color: var(--danger); }
+  .unavail-toggle { font-size: 10px; cursor: pointer; border: none; border-radius: 4px; padding: 2px 5px; font-family: 'DM Sans', sans-serif; }
+  .unavail-toggle.avail { background: var(--green); color: #fff; }
+  .unavail-toggle.unavail { background: var(--danger); color: #fff; }
+  .size-input-row { display: flex; gap: 8px; margin-top: 8px; }
+  .size-input-row input { background: var(--surface2); border: 1px solid var(--border); color: var(--cream); border-radius: 8px; padding: 8px 12px; font-family: 'DM Sans', sans-serif; font-size: 13px; outline: none; width: 100px; transition: border-color 0.2s; }
+  .size-input-row input:focus { border-color: var(--gold); }
+  .btn-add-size { background: var(--surface2); border: 1px solid var(--border); color: var(--muted); border-radius: 8px; padding: 8px 12px; font-family: 'DM Sans', sans-serif; font-size: 12px; cursor: pointer; transition: all 0.2s; }
+  .btn-add-size:hover { border-color: var(--gold); color: var(--gold); }
+
+  /* ─── FOTOS SECTION (manual paths) ─── */
+  .imgs-list { display: flex; flex-direction: column; gap: 6px; }
+  .img-row { display: flex; gap: 8px; align-items: center; }
+  .img-row input { flex: 1; background: var(--surface2); border: 1px solid var(--border); color: var(--cream); border-radius: 8px; padding: 9px 12px; font-family: 'DM Sans', sans-serif; font-size: 12px; outline: none; transition: border-color 0.2s; }
+  .img-row input:focus { border-color: var(--gold); }
+  .img-row input::placeholder { color: var(--muted); }
+  .img-remove { background: none; border: none; color: var(--danger); font-size: 16px; cursor: pointer; opacity: 0.5; transition: opacity 0.15s; }
+  .img-remove:hover { opacity: 1; }
+  .btn-add-img { background: var(--surface2); border: 1px dashed var(--border); color: var(--muted); border-radius: 8px; padding: 9px; font-family: 'DM Sans', sans-serif; font-size: 12px; cursor: pointer; width: 100%; margin-top: 6px; transition: all 0.2s; }
+  .btn-add-img:hover { border-color: var(--gold); color: var(--gold); }
+
+  /* ─── UPLOAD DE FOTOS ─── */
+  .upload-section { margin-top: 14px; padding-top: 14px; border-top: 1px solid var(--border); }
+  .upload-label { font-size: 10px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 10px; }
+
+  .dropzone {
+    border: 2px dashed var(--border); border-radius: 10px;
+    padding: 20px 16px; text-align: center; cursor: pointer;
+    transition: all 0.2s; background: var(--surface2);
+  }
+  .dropzone:hover, .dropzone.dragging { border-color: var(--gold); background: rgba(201,168,76,0.06); }
+  .dropzone-icon { font-size: 28px; margin-bottom: 8px; }
+  .dropzone-text { font-size: 12px; color: var(--muted); }
+  .dropzone-text strong { color: var(--gold); cursor: pointer; }
+  .dropzone input[type=file] { display: none; }
+  .dropzone-sub { font-size: 10px; color: var(--muted); margin-top: 4px; }
+
+  .upload-queue { display: flex; flex-direction: column; gap: 6px; margin-top: 10px; }
+  .upload-item {
+    background: var(--surface2); border: 1px solid var(--border); border-radius: 8px;
+    padding: 8px 10px; display: grid; grid-template-columns: 44px 1fr auto; gap: 8px; align-items: center;
+  }
+  .upload-thumb { width: 44px; height: 44px; border-radius: 6px; object-fit: cover; }
+  .upload-info { min-width: 0; }
+  .upload-filename { font-size: 12px; color: var(--cream); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .upload-path-input {
+    font-size: 11px; color: var(--gold); background: transparent; border: none;
+    border-bottom: 1px dashed var(--border); outline: none; width: 100%;
+    font-family: 'DM Sans', monospace; padding: 2px 0; margin-top: 3px;
+  }
+  .upload-path-input:focus { border-bottom-color: var(--gold); }
+  .upload-status { font-size: 10px; margin-top: 2px; }
+  .upload-status.pending { color: var(--muted); }
+  .upload-status.uploading { color: var(--gold); }
+  .upload-status.ok { color: var(--green); }
+  .upload-status.err { color: var(--danger); }
+  .upload-remove { background: none; border: none; color: var(--danger); font-size: 16px; cursor: pointer; opacity: 0.5; }
+  .upload-remove:hover { opacity: 1; }
+
+  .btn-upload-all {
+    width: 100%; background: var(--blue); color: #fff; border: none; border-radius: 10px;
+    padding: 11px; font-family: 'DM Sans', sans-serif; font-size: 13px; font-weight: 700;
+    cursor: pointer; transition: background 0.2s; margin-top: 10px;
+    display: flex; align-items: center; justify-content: center; gap: 8px;
+  }
+  .btn-upload-all:hover { background: #3d7ab8; }
+  .btn-upload-all:disabled { opacity: 0.5; cursor: not-allowed; }
+
+  .upload-hint { font-size: 10px; color: var(--muted); margin-top: 6px; line-height: 1.5; }
+
+  /* ─── EDITOR ACTIONS ─── */
+  .editor-actions { display: flex; gap: 10px; margin-top: 8px; }
+  .btn-save { flex: 1; background: var(--gold); color: #0e0c0a; border: none; border-radius: 10px; padding: 13px; font-family: 'DM Sans', sans-serif; font-size: 14px; font-weight: 700; cursor: pointer; transition: background 0.2s; }
+  .btn-save:hover { background: var(--gold-light); }
+
+  /* GITHUB SECTION */
+  .github-section { border-top: 1px solid var(--border); padding: 20px; background: var(--surface); }
+  .github-title { font-size: 12px; font-weight: 500; text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted); margin-bottom: 14px; display: flex; align-items: center; gap: 6px; }
+
+  .gh-status {
+    display: flex; align-items: center; gap: 8px; font-size: 12px; color: var(--muted);
+    padding: 8px 12px; background: var(--surface2); border: 1px solid var(--border);
+    border-radius: 8px; margin-bottom: 12px;
+  }
+  .gh-status .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--muted); flex-shrink: 0; }
+  .gh-status.ok .dot { background: var(--green); }
+  .gh-status.ok { color: var(--green); border-color: var(--green); }
+  .gh-status.err .dot { background: var(--danger); }
+  .gh-status.err { color: var(--danger); border-color: var(--danger); }
+  .gh-status.loading .dot { background: var(--gold); animation: pulse 1s infinite; }
+  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.3} }
+
+  .gh-config { display: flex; flex-direction: column; gap: 8px; margin-bottom: 12px; }
+  .gh-config input {
+    background: var(--surface2); border: 1px solid var(--border); color: var(--cream);
+    border-radius: 8px; padding: 9px 12px; font-family: 'DM Sans', monospace; font-size: 12px;
+    outline: none; transition: border-color 0.2s; width: 100%;
+  }
+  .gh-config input:focus { border-color: var(--gold); }
+  .gh-config input::placeholder { color: var(--muted); }
+
+  .btn-publish {
+    width: 100%; background: var(--green); color: #fff; border: none; border-radius: 10px;
+    padding: 13px; font-family: 'DM Sans', sans-serif; font-size: 14px; font-weight: 700;
+    cursor: pointer; transition: background 0.2s; display: flex; align-items: center; justify-content: center; gap: 8px;
+  }
+  .btn-publish:hover { background: #3d9e6a; }
+  .btn-publish:disabled { opacity: 0.5; cursor: not-allowed; }
+  .btn-sync {
+    width: 100%; background: var(--surface2); color: var(--cream); border: 1px solid var(--border); border-radius: 10px;
+    padding: 11px; font-family: 'DM Sans', sans-serif; font-size: 13px; font-weight: 600;
+    cursor: pointer; transition: all 0.2s; display: flex; align-items: center; justify-content: center; gap: 8px;
+    margin-top: 8px;
+  }
+  .btn-sync:hover { border-color: var(--gold); color: var(--gold); }
+  .btn-sync:disabled { opacity: 0.5; cursor: not-allowed; }
+
+  .hint { font-size: 11px; color: var(--muted); line-height: 1.5; margin-top: 6px; }
+  code { background: var(--surface2); padding: 1px 5px; border-radius: 4px; font-family: monospace; font-size: 11px; color: var(--gold); }
+
+  .toast { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%) translateY(20px); background: var(--green); color: #fff; padding: 10px 22px; border-radius: 50px; font-size: 13px; font-weight: 500; z-index: 999; opacity: 0; transition: all 0.3s; white-space: nowrap; }
+  .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+  /* DIRTY INDICATOR */
+  .dirty-badge {
+    display: none; background: var(--gold); color: #0e0c0a;
+    font-size: 9px; font-weight: 700; padding: 2px 7px; border-radius: 50px;
+    letter-spacing: 0.05em; text-transform: uppercase; margin-left: 6px; vertical-align: middle;
+  }
+  .dirty-badge.visible { display: inline-block; }
+  .pli-name .dirty-dot {
+    display: inline-block; width: 6px; height: 6px; border-radius: 50%;
+    background: var(--gold); margin-left: 5px; vertical-align: middle;
+  }
+
+  /* CONFIRM MODAL */
+  .modal-overlay {
+    position: fixed; inset: 0; background: rgba(0,0,0,0.75);
+    z-index: 500; display: flex; align-items: center; justify-content: center;
+    opacity: 0; pointer-events: none; transition: opacity 0.2s;
+  }
+  .modal-overlay.open { opacity: 1; pointer-events: all; }
+  .modal {
+    background: var(--surface); border: 1px solid var(--border); border-radius: 16px;
+    padding: 28px 28px 22px; max-width: 360px; width: 90%; text-align: center;
+  }
+  .modal-icon { font-size: 36px; margin-bottom: 12px; }
+  .modal-title { font-family: 'Playfair Display', serif; font-size: 18px; color: var(--cream); margin-bottom: 8px; }
+  .modal-desc { font-size: 12px; color: var(--muted); line-height: 1.6; margin-bottom: 22px; }
+  .modal-actions { display: flex; gap: 10px; }
+  .modal-cancel { flex: 1; background: var(--surface2); border: 1px solid var(--border); color: var(--muted); border-radius: 10px; padding: 11px; font-family: 'DM Sans', sans-serif; font-size: 13px; cursor: pointer; transition: border-color 0.2s; }
+  .modal-cancel:hover { border-color: var(--gold); color: var(--gold); }
+  .modal-confirm { flex: 1; background: var(--green); border: none; color: #fff; border-radius: 10px; padding: 11px; font-family: 'DM Sans', sans-serif; font-size: 13px; font-weight: 700; cursor: pointer; transition: background 0.2s; }
+  .modal-confirm:hover { background: #3d9e6a; }
+  .modal-confirm.danger { background: var(--danger); }
+  .modal-confirm.danger:hover { background: #b03a3a; }
+
+  @media (max-width: 720px) { .layout { grid-template-columns: 1fr; } .sidebar { max-height: 250px; } }
+
+.btn-pub-top{position:relative;background:var(--gold);color:#0e0c0a;border:0;border-radius:50px;padding:9px 16px;font:700 13px 'DM Sans',sans-serif;cursor:pointer}
+.pub-dot{display:none;position:absolute;top:-3px;right:-3px;width:12px;height:12px;border-radius:50%;background:var(--danger);border:2px solid var(--surface)}
+.pub-dot.on{display:block}
+.list-search{width:100%;background:var(--surface2);border:1px solid var(--border);color:var(--cream);border-radius:8px;padding:10px 12px;font:16px 'DM Sans',sans-serif;outline:none}
+.pli-thumb{width:44px;height:44px;border-radius:8px;object-fit:cover;display:block}
+.pli-del{font-size:15px;min-width:32px;min-height:32px}
+.imgs-list{display:grid;grid-template-columns:repeat(auto-fill,minmax(88px,1fr));gap:8px}
+.thumb{position:relative;aspect-ratio:3/4;border-radius:10px;overflow:hidden;background:var(--surface2)}
+.thumb img{width:100%;height:100%;object-fit:cover}
+.thumb button{position:absolute;bottom:4px;width:30px;height:30px;border-radius:50%;border:0;background:rgba(14,12,10,.75);color:var(--cream);font-size:14px;cursor:pointer}
+.thumb button:nth-of-type(1){left:4px}.thumb button:nth-of-type(2){right:4px}
+.tmain{position:absolute;top:4px;left:4px;background:var(--gold);color:#0e0c0a;font-size:9px;font-weight:700;border-radius:50px;padding:2px 7px}
+.bulk{display:flex;gap:8px;margin-top:10px}
+.bulk button,.mob-back{background:var(--surface2);border:1px solid var(--border);color:var(--cream);border-radius:8px;padding:9px 12px;font:12px 'DM Sans',sans-serif;cursor:pointer}
+.mob-back{display:none;margin-bottom:14px}
+.github-title{cursor:pointer}
+.rem{display:flex;align-items:center;gap:6px;font-size:11px;color:var(--muted);margin:2px 0 8px}
+.rem input{width:auto}
+@media(max-width:820px){
+  .layout{display:block}
+  .sidebar{border-right:0;min-height:calc(100vh - 53px)}
+  .github-section{order:-1}
+  body:not(.gh-open) .gh-config,body:not(.gh-open) .github-section .hint,body:not(.gh-open) .rem{display:none}
+  .pli-handle{display:none}
+  .editor{display:none;position:fixed;inset:0;z-index:200;background:var(--bg);padding:14px 14px 110px;overflow-y:auto}
+  body.editing .editor{display:block}
+  .mob-back{display:inline-block}
+  header{padding:12px 14px}
+  .field-row{grid-template-columns:1fr}
+  .field input,.field select,.field textarea{font-size:16px;padding:12px}
+  .editor-actions{position:fixed;left:0;right:0;bottom:0;z-index:210;padding:10px 14px calc(10px + env(safe-area-inset-bottom));background:var(--surface);border-top:1px solid var(--border);display:flex}
+  .btn-save{flex:1;padding:14px}
+  .toast{bottom:calc(90px + env(safe-area-inset-bottom))}
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div style="display:flex;align-items:center;gap:8px">
+    <div class="logo">GG<span>Imports</span></div>
+    <span class="badge-admin">Painel Admin</span>
+  </div>
+  <button class="btn-pub-top" onclick="confirmPublish()">🚀 Publicar<span class="pub-dot" id="pubDot"></span></button>
+</header>
+
+<div class="layout">
+  <!-- SIDEBAR -->
+  <div class="sidebar">
+    <div class="sidebar-header">
+      <span class="sidebar-title">Produtos (<span id="productCount">0</span>)</span>
+      <button class="btn-new" onclick="newProduct()">+ Novo</button>
+    </div>
+    <div style="padding:10px 14px 0"><input class="list-search" id="listSearch" placeholder="🔍 Buscar produto..." oninput="renderList()"></div>
+    <div class="product-list" id="productList"></div>
+
+    <!-- GITHUB PUBLISH -->
+    <div class="github-section">
+      <div class="github-title" onclick="document.body.classList.toggle('gh-open')">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
+        Publicar no GitHub
+      </div>
+
+      <div class="gh-status" id="ghStatus">
+        <span class="dot"></span>
+        <span id="ghStatusText">Configure abaixo para publicar</span>
+      </div>
+
+      <div class="gh-config">
+        <input type="text" id="ghOwner" placeholder="Usuário GitHub (ex: mariagomes)" value="">
+        <input type="text" id="ghRepo" placeholder="Repositório (ex: gg-imports)" value="">
+        <input type="text" id="ghFile" placeholder="Caminho do arquivo (ex: index.html)" value="index.html">
+        <input type="password" id="ghToken" placeholder="Token do GitHub (ghp_...)" value="">
+        <label class="rem"><input type="checkbox" id="ghRemember"> Lembrar token neste aparelho (só em aparelho seu)</label>
+      </div>
+
+      <button class="btn-sync" id="btnSync" onclick="confirmSyncFromGitHub()">
+        🔄 Atualizar do GitHub
+      </button>
+      <div class="hint" style="margin-top:4px;margin-bottom:8px">
+        Busca os produtos que estão publicados no GitHub agora e substitui os dados aqui no admin, evitando desincronização.
+      </div>
+
+      <button class="btn-publish" id="btnPublish" onclick="confirmPublish()">
+        🚀 Publicar no site
+      </button>
+      <div class="hint" style="margin-top:8px">
+        Ao publicar, o bloco <code>const PRODUCTS = [...]</code> do seu <code>index.html</code> é atualizado automaticamente no repositório.
+      </div>
+    </div>
+  </div>
+
+  <!-- EDITOR -->
+  <div class="editor" id="editorArea">
+    <div class="empty-state" id="emptyState">
+      <span>👗</span>
+      <p>Selecione um produto para editar<br>ou clique em <strong>+ Novo</strong> para criar</p>
+    </div>
+
+    <div id="editorForm" style="display:none">
+      <button class="mob-back" onclick="closeEditor()">← Voltar aos produtos</button>
+      <div class="editor-title" id="editorHeading">Produto</div>
+      <div class="editor-sub">Preencha os campos abaixo. Clique em Salvar ao terminar. <span class="dirty-badge" id="dirtyBadge">● Não salvo</span></div>
+
+      <div class="section">
+        <div class="section-title">📋 Informações básicas</div>
+        <div class="field-row">
+          <div class="field">
+            <label>Nome do produto *</label>
+            <input type="text" id="f-name" placeholder="Ex: BabyTee Gola Alta">
+          </div>
+          <div class="field">
+            <label>Emoji (ícone de fallback)</label>
+            <input type="text" id="f-emoji" placeholder="👗" maxlength="2">
+          </div>
+        </div>
+        <div class="field-row">
+          <div class="field">
+            <label>Preço (R$) *</label>
+            <input type="number" id="f-price" placeholder="159.90" step="0.01" min="0">
+          </div>
+          <div class="field">
+            <label>Categoria *</label>
+            <select id="f-cat">
+              <option value="feminino">Feminino</option>
+              <option value="masculino">Masculino</option>
+              <option value="vestido">Vestido</option>
+              <option value="casual">Casual</option>
+              <option value="plus">Plus Size</option>
+            </select>
+          </div>
+        </div>
+        <div class="field-row single">
+          <div class="field">
+            <label>Preço antigo — aparece riscado com % de desconto (opcional)</label>
+            <input type="number" id="f-old" placeholder="Ex: 99.90" step="0.01" min="0">
+          </div>
+        </div>
+        <div class="field-row single">
+          <div class="field">
+            <label>Descrição</label>
+            <textarea id="f-desc" placeholder="Detalhes do produto, tecido, composição..."></textarea>
+          </div>
+        </div>
+        <div class="field-row single">
+          <div class="field">
+            <label>Badge (opcional)</label>
+            <input type="text" id="f-badge" placeholder="Ex: Novo · Mais pedido · Promoção">
+          </div>
+        </div>
+      </div>
+
+      <!-- ─── SEÇÃO DE FOTOS (paths manuais + upload) ─── -->
+      <div class="section">
+        <div class="section-title">📸 Fotos do produto</div>
+
+        <div style="font-size:11px;color:var(--muted);margin-bottom:10px">
+          Caminhos salvos no produto (usados no site):
+        </div>
+        <div class="imgs-list" id="imgsList"></div>
+        <button class="btn-add-img" onclick="addImg()">+ Adicionar caminho manualmente</button>
+
+        <!-- UPLOAD DIRETO PARA O GITHUB -->
+        <div class="upload-section">
+          <div class="upload-label">⚡ Enviar fotos direto para o GitHub</div>
+
+          <div class="dropzone" id="dropzone" onclick="document.getElementById('fileInput').click()"
+            ondragover="handleDragOver(event)" ondragleave="handleDragLeave(event)" ondrop="handleDrop(event)">
+            <div class="dropzone-icon">📁</div>
+            <div class="dropzone-text"><strong>Clique para selecionar</strong> ou arraste as fotos aqui</div>
+            <div class="dropzone-sub">JPG, JPEG, PNG, WEBP — múltiplos arquivos suportados</div>
+            <input type="file" id="fileInput" accept="image/*" multiple onchange="handleFileSelect(event)">
+          </div>
+
+          <div class="upload-queue" id="uploadQueue"></div>
+
+          <button class="btn-upload-all" id="btnUploadAll" onclick="uploadAllToGitHub()" style="display:none">
+            ☁️ Enviar fotos para o repositório
+          </button>
+          <div class="upload-hint" id="uploadHint" style="display:none">
+            As fotos serão enviadas para a pasta <code>fotos/</code> no repositório. O caminho é adicionado automaticamente ao produto após o upload. Requer o token configurado na sidebar.
+          </div>
+        </div>
+
+        <div class="hint" style="margin-top:10px">Caminho sugerido: <code>fotos/nome-do-arquivo.jpeg</code></div>
+      </div>
+
+      <div class="section">
+        <div class="section-title">🎨 Cores disponíveis</div>
+        <div class="colors-list" id="colorsList"></div>
+        <button class="btn-add-color" onclick="addColor()">+ Nova cor (picker)</button>
+        <div class="palette-section">
+          <div class="palette-label">⚡ Cores já usadas — clique para adicionar</div>
+          <div class="palette-grid" id="paletteGrid"></div>
+        </div>
+      </div>
+
+      <div class="section">
+        <div class="section-title">📐 Tamanhos</div>
+        <div class="sizes-area" id="sizesArea"></div>
+        <div class="bulk"><button onclick="bulkUnavail(true)">Esgotar todos</button><button onclick="bulkUnavail(false)">Todos disponíveis</button></div>
+        <div class="size-input-row">
+          <input type="text" id="sizeInput" placeholder="P, M, G, 38..." onkeydown="if(event.key==='Enter')addSize()">
+          <button class="btn-add-size" onclick="addSize()">+ Adicionar</button>
+        </div>
+        <div class="palette-section">
+          <div class="palette-label">⚡ Tamanhos já usados — clique para adicionar</div>
+          <div class="size-palette-grid" id="sizePaletteGrid"></div>
+        </div>
+      </div>
+
+      <div class="editor-actions">
+        <button class="btn-save" onclick="saveProduct()">✓ Salvar produto</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+<div class="palette-tooltip" id="paletteTooltip"></div>
+
+<!-- CONFIRM MODAL -->
+<div class="modal-overlay" id="modalOverlay">
+  <div class="modal">
+    <div class="modal-icon" id="modalIcon">⚠️</div>
+    <div class="modal-title" id="modalTitle">Confirmar</div>
+    <div class="modal-desc" id="modalDesc"></div>
+    <div class="modal-actions">
+      <button class="modal-cancel" onclick="closeModal()">Cancelar</button>
+      <button class="modal-confirm" id="modalConfirm" onclick="confirmModal()">Confirmar</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ─── CONFIG LOCAL STORAGE ──────────────────────────────────────────────────
+const LS_PRODUCTS = 'gg_products';
+const LS_GH       = 'gg_github_config';
+
+const CAT_LABELS = { feminino:"Feminino", masculino:"Masculino", vestido:"Vestido", casual:"Casual", plus:"Plus Size" };
+
+const DEFAULT_PRODUCTS = [
+  { id:1, name:"BabyTee Gola Alta", category:"feminino", price:65, emoji:"👗", img:["fotos/babytee.jpeg","fotos/babytee2.jpeg"], desc:"Peça coringa para todas as estações. Tamanho único veste do 36 ao 40.", colors:[{name:"Preto",hex:"#1a1a1a"},{name:"Cinza",hex:"#808080"},{name:"Off-White",hex:"#e8dcc8"},{name:"Verde Escuro",hex:"#013220"},{name:"Rosa",hex:"#e8a0b0"},{name:"Chocolate",hex:"#D2691E"}], sizes:["Tamanho único"], unavailable:[], badge:"Novo" },
+  { id:2, name:"Blusa Cropped - Poliamida", category:"feminino", price:59.9, emoji:"👚", img:["fotos/cropped.jpeg"], desc:"Forro duplo nos seios, Multiformas, Tamanho único (36 ao 40/42).", colors:[{name:"Preto",hex:"#1a1a1a"},{name:"Chocolate",hex:"#D2691E"},{name:"Cinza Claro",hex:"#E0E0E0"},{name:"Azul Escuro",hex:"#000080"},{name:"Rosa Neon",hex:"#FF13F0"},{name:"Azul Turquesa",hex:"#30D5C8"},{name:"Rosa",hex:"#e8a0b0"},{name:"Verde Claro",hex:"#90EE90"}], sizes:["Tamanho único"], unavailable:[], badge:null },
+  { id:3, name:"Conjunto Juliet", category:"feminino", price:145, emoji:"👖", img:"fotos/juliet.jpeg", desc:"Conjunto juliet - alfaiataria.", colors:[{name:"Preto",hex:"#1a1a1a"},{name:"Amarelo",hex:"#FFFF00"},{name:"Verde Menta",hex:"#ADEBB3"}], sizes:["P","M","G","GG"], unavailable:[], badge:"Mais pedido" },
+  { id:4, name:"Calça Pantalona - Alfaiataria", category:"feminino", price:80, emoji:"👕", img:"fotos/pantalona.jpeg", desc:"Calça Pantalona básica- alfaiataria.", colors:[{name:"Branco",hex:"#f0ece4"},{name:"Preto",hex:"#1a1a1a"},{name:"Off-White",hex:"#e8dcc8"},{name:"Marrom",hex:"#964B00"},{name:"Cinza",hex:"#808080"},{name:"Cinza Chumbo",hex:"#818589"},{name:"Azul Marinho",hex:"#243055"},{name:"Bege",hex:"#c8b49a"},{name:"Bege Escuro",hex:"#AC9362"},{name:"Amarelo",hex:"#FFFF00"},{name:"Verde Militar",hex:"#4B5320"},{name:"Verde Bandeira",hex:"#009440"},{name:"Terra Cota",hex:"#E35336"},{name:"Vinho",hex:"#722F37"},{name:"Vermelho",hex:"#FF0000"}], sizes:["P","M","G","GG","G1"], unavailable:["G1"], badge:null },
+  { id:5, name:"Camiseta Brasil - Masculina.", category:"masculino", price:160, emoji:"🩳", img:"fotos/brma_1.jpg", desc:"TAILANDESA BRASIL AZUL - MODELO TORCEDOR. ‼️Logo e brasão bordados.‼️Acabamento premium, idêntica à original.", colors:[{name:"Azul",hex:"#4a6888"}], sizes:["P","M","G","GG","G1","G2"], unavailable:["P","G1","G2"], badge:null },
+  { id:6, name:"Camiseta Brasil - Feminino.", category:"feminino", price:150, emoji:"🩳", img:"fotos/brfe_1.jpg", desc:"TAILANDESA BRASIL AZUL - MODELO TORCEDOR. ‼️Logo e brasão bordados.‼️Acabamento premium, idêntica à original.", colors:[{name:"Azul",hex:"#4a6888"}], sizes:["P","M","G","GG","G1","G2"], unavailable:["G2","P","M","G","GG","G1"], badge:null },
+  { id:7, name:"Colete Social - Alfaiataria", category:"feminino", price:60, emoji:"👗", img:["fotos/co_1.jpeg","fotos/co_2.jpeg"], desc:"", colors:[{name:"Branco",hex:"#ffffff"},{name:"Off White",hex:"#f5f5f5"},{name:"Preto",hex:"#000000"},{name:"Bege Claro",hex:"#c4a484"},{name:"Bege Escuro",hex:"#d5ac85"},{name:"Vermelho",hex:"#ff0000"},{name:"Terra Cota",hex:"#c58544"},{name:"Azul Bebê",hex:"#3c6ee2"},{name:"Rosa Bebê",hex:"#f72ba2"}], sizes:["P","M","G","GG"], unavailable:[], badge:null },
+  { id:8, name:"Shorts Lacoste - Modelo Basico", category:"masculino", price:70, emoji:"👗", img:["fotos/lac_1.jpeg","fotos/lac_2.jpeg","fotos/lac_3.jpeg","fotos/lac_4.jpeg","fotos/lac_5.jpeg","fotos/lac_6.jpeg","fotos/lac_7.jpeg","fotos/lac_8.jpeg"], desc:"", colors:[{name:"Branco",hex:"#ffffff"},{name:"Preto",hex:"#000000"},{name:"Verde Claro",hex:"#00a80b"},{name:"Azul Marinho",hex:"#0050d1"},{name:"Azul Bebê",hex:"#479bf5"},{name:"Verde Musgo",hex:"#0e7500"},{name:"Vermelho",hex:"#db0000"},{name:"Azul Royal",hex:"#2b00ff"}], sizes:["P","M","G","GG"], unavailable:["P"], badge:"Promoção" },
+  { id:9, name:"Shorts Boss", category:"masculino", price:70, emoji:"👗", img:["fotos/boss_1.jpeg","fotos/boss_2.jpeg","fotos/boss_3.jpeg","fotos/boss_4.jpeg","fotos/boss_5.jpeg","fotos/boss_6.jpeg"], desc:"", colors:[{name:"Branco",hex:"#ffffff"},{name:"Preto",hex:"#000000"},{name:"Azul Royal",hex:"#2b00ff"},{name:"Azul Bebê",hex:"#3c6ee2"},{name:"Azul Marinho",hex:"#243055"}], sizes:["P","M","G","GG"], unavailable:["P"], badge:"Promoção" },
+  { id:10, name:"Shorts Emporio Armani", category:"masculino", price:70, emoji:"👗", img:["fotos/ea_1.jpeg","fotos/ea_2.jpeg"], desc:"", colors:[{name:"Preto",hex:"#1a1a1a"},{name:"Cinza Escuro",hex:"#4f4f4f"},{name:"Vermelho",hex:"#FF0000"},{name:"Bege Claro",hex:"#c4a484"}], sizes:["P","M","G","GG"], unavailable:["P"], badge:"Promoção" },
+  { id:11, name:"Cropped Lumi", category:"feminino", price:65, emoji:"👗", img:["fotos/lu_1.jpeg","fotos/lu_2.jpeg","fotos/lu_3.jpeg","fotos/lu_4.jpeg"], desc:"Diferenciais:\n* Abertura frontal moderna\n* Detalhe no dedo estilo gringa\n* Manga longa\n* Alta elasticidade", colors:[{name:"Off White",hex:"#f5f5f5"},{name:"Preto",hex:"#1a1a1a"},{name:"Cinza Claro",hex:"#E0E0E0"},{name:"Vinho",hex:"#722F37"},{name:"Chocolate",hex:"#D2691E"},{name:"Verde Escuro",hex:"#013220"},{name:"Rosa",hex:"#e8a0b0"}], sizes:["Tamanho único"], unavailable:[], badge:null },
+  { id:12, name:"Moletom Feminino Nike", category:"feminino", price:149.99, emoji:"👗", img:["fotos/moni_1.jpeg","fotos/moni_2.jpeg","fotos/moni_3.jpeg","fotos/moni_4.jpeg"], desc:"", colors:[{name:"Cinza",hex:"#808080"},{name:"Rosa Bebê",hex:"#f72ba2"},{name:"Preto",hex:"#1a1a1a"},{name:"Bege",hex:"#c8b49a"}], sizes:["P","M","G","GG"], unavailable:[], badge:"Novo" },
+  { id:13, name:"Moletom Feminino Adidas", category:"feminino", price:149.9, emoji:"👗", img:["fotos/moad_1.jpeg","fotos/moad_2.jpeg","fotos/moad_3.jpeg","fotos/moad_4.jpeg"], desc:"", colors:[{name:"Cinza",hex:"#808080"},{name:"Preto",hex:"#1a1a1a"},{name:"Bege",hex:"#c8b49a"},{name:"Rosa Bebê",hex:"#f72ba2"}], sizes:["P","M","G","GG"], unavailable:[], badge:"Novo" },
+  { id:14, name:"Moletom Feminino Puma", category:"feminino", price:149.9, emoji:"👗", img:["fotos/mopu_1.jpeg","fotos/mopu_2.jpeg","fotos/mopu_3.jpeg","fotos/mopu_4.jpeg"], desc:"", colors:[{name:"Cinza",hex:"#808080"},{name:"Preto",hex:"#1a1a1a"},{name:"Bege",hex:"#c8b49a"},{name:"Rosa Bebê",hex:"#f72ba2"}], sizes:["P","M","G","GG"], unavailable:[], badge:"Novo" }
+];
+
+let products = JSON.parse(localStorage.getItem(LS_PRODUCTS) || 'null') || DEFAULT_PRODUCTS;
+
+// Normaliza variações antigas de "tamanho único" (ex: "UNICO", "ÚNICO") salvas no localStorage
+function normalizeStoredSize(s) {
+  const lower = (s || '').trim().toLowerCase();
+  if (lower === 'unico' || lower === 'único' || lower === 'tamanho unico' || lower === 'tamanho único') {
+    return 'Tamanho único';
+  }
+  return s;
+}
+let sizesWereNormalized = false;
+products.forEach(p => {
+  if (!Array.isArray(p.sizes)) return;
+  p.sizes = p.sizes.map(s => {
+    const norm = normalizeStoredSize(s);
+    if (norm !== s) sizesWereNormalized = true;
+    return norm;
+  });
+  if (Array.isArray(p.unavailable)) p.unavailable = p.unavailable.map(normalizeStoredSize);
+});
+if (sizesWereNormalized) saveLocal();
+
+let editingId = null;
+let editSizes = [], editUnavail = [], editColors = [], editImgs = [];
+
+// ─── UPLOAD STATE ──────────────────────────────────────────────────────────
+let uploadQueue = []; // [{ file, path, status, objectUrl }]
+
+// ─── PERSIST ───────────────────────────────────────────────────────────────
+function saveLocal() { localStorage.setItem(LS_PRODUCTS, JSON.stringify(products)); markPub(); }
+function nextId() { return products.length ? Math.max(...products.map(p => p.id)) + 1 : 1; }
+
+// ─── CONFIG GITHUB ──────────────────────────────────────────────────────────
+function loadGhConfig() {
+  const cfg = JSON.parse(localStorage.getItem(LS_GH) || '{}');
+  if (cfg.owner) document.getElementById('ghOwner').value = cfg.owner;
+  if (cfg.repo)  document.getElementById('ghRepo').value  = cfg.repo;
+  if (cfg.file)  document.getElementById('ghFile').value  = cfg.file || 'index.html';
+  if (cfg.remember) { document.getElementById('ghRemember').checked = true; document.getElementById('ghToken').value = cfg.token || ''; }
+}
+
+function saveGhConfig() {
+  const cfg = {
+    owner: document.getElementById('ghOwner').value.trim(),
+    repo:  document.getElementById('ghRepo').value.trim(),
+    file:  document.getElementById('ghFile').value.trim() || 'index.html',
+    remember: document.getElementById('ghRemember').checked,
+    token: document.getElementById('ghRemember').checked ? document.getElementById('ghToken').value.trim() : '',
+  };
+  localStorage.setItem(LS_GH, JSON.stringify(cfg));
+}
+
+function getGhParams() {
+  return {
+    owner: document.getElementById('ghOwner').value.trim(),
+    repo:  document.getElementById('ghRepo').value.trim(),
+    token: document.getElementById('ghToken').value.trim(),
+  };
+}
+
+// ─── TOAST ─────────────────────────────────────────────────────────────────
+function showToast(msg, color) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.style.background = color || 'var(--green)';
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 3000);
+}
+
+// ─── GH STATUS ─────────────────────────────────────────────────────────────
+function setGhStatus(state, msg) {
+  const el = document.getElementById('ghStatus');
+  const txt = document.getElementById('ghStatusText');
+  el.className = 'gh-status ' + state;
+  txt.textContent = msg;
+}
+
+// ─── LISTA ─────────────────────────────────────────────────────────────────
+const previewMap = {};
+function markPub(){ localStorage.setItem('gg_pub_dirty','1'); syncPub(); }
+function clearPub(){ localStorage.removeItem('gg_pub_dirty'); syncPub(); }
+function syncPub(){ const d=document.getElementById('pubDot'); if(d) d.classList.toggle('on', localStorage.getItem('gg_pub_dirty')==='1'); }
+function thumbOf(p){
+  const s=Array.isArray(p.img)?p.img[0]:p.img;
+  return s ? `<img class="pli-thumb" src="${previewMap[s]||s}" loading="lazy" onerror="this.replaceWith('👗')">` : (p.emoji||'👗');
+}
+function quickSoldOut(id){
+  const p=products.find(x=>x.id===id); if(!p||!p.sizes.length) return;
+  const out=isProductUnavailable(p);
+  p.unavailable=out?[]:[...p.sizes];
+  if(editingId===id){ editUnavail=[...p.unavailable]; renderSizes(); }
+  saveLocal(); renderList();
+  showToast(out?'Produto reaberto':'Produto marcado como esgotado', out?undefined:'var(--danger)');
+}
+function dupProduct(id){
+  const p=products.find(x=>x.id===id); if(!p) return;
+  const c=JSON.parse(JSON.stringify(p)); c.id=nextId(); c.name+=' (cópia)';
+  products.unshift(c); isDirty=false; saveLocal(); renderList(); editProduct(c.id);
+}
+function bulkUnavail(v){ editUnavail=v?[...editSizes]:[]; renderSizes(); markDirty(); }
+function makeMain(i){ const [x]=editImgs.splice(i,1); editImgs.unshift(x); renderImgs(); markDirty(); }
+function closeEditor(){
+  const go=()=>{ isDirty=false; document.getElementById('dirtyBadge').classList.remove('visible'); document.body.classList.remove('editing'); editingId=null; renderList(); };
+  if(isDirty) openModal({icon:'⚠️',title:'Alterações não salvas',desc:'Sair sem salvar este produto?',confirmLabel:'Sair sem salvar',danger:true,onConfirm:go});
+  else go();
+}
+function compressImg(file,max=1400){
+  return new Promise(res=>{
+    const img=new Image();
+    img.onload=()=>{
+      const k=Math.min(1,max/Math.max(img.width,img.height)), c=document.createElement('canvas');
+      c.width=Math.round(img.width*k); c.height=Math.round(img.height*k);
+      c.getContext('2d').drawImage(img,0,0,c.width,c.height);
+      URL.revokeObjectURL(img.src);
+      c.toBlob(b=>res(b||file),'image/jpeg',.82);
+    };
+    img.onerror=()=>res(file);
+    img.src=URL.createObjectURL(file);
+  });
+}
+function isProductUnavailable(p) {
+  const sizes = Array.isArray(p.sizes) ? p.sizes : [];
+  const unavail = Array.isArray(p.unavailable) ? p.unavailable : [];
+  if (!sizes.length) return false;
+  return sizes.every(s => unavail.includes(s));
+}
+
+// Garante que produtos totalmente indisponíveis fiquem sempre ao final,
+// preservando a ordem relativa dentro de cada grupo (disponíveis / indisponíveis).
+function enforceUnavailableAtEnd() {
+  const available = products.filter(p => !isProductUnavailable(p));
+  const unavailable = products.filter(p => isProductUnavailable(p));
+  products = [...available, ...unavailable];
+}
+
+function renderList() {
+  enforceUnavailableAtEnd();
+  document.getElementById('productCount').textContent = products.length;
+  const q=(document.getElementById('listSearch')?.value||'').toLowerCase();
+  document.getElementById('productList').innerHTML = products.filter(p=>p.name.toLowerCase().includes(q)).map((p, i) => {
+    const unavail = isProductUnavailable(p);
+    return `
+    <div class="product-list-item ${p.id === editingId ? 'active' : ''} ${unavail ? 'pli-unavailable' : ''}"
+      draggable="true" data-id="${p.id}"
+      ondragstart="dragStartItem(event, ${p.id})"
+      ondragover="dragOverItem(event, ${p.id})"
+      ondragleave="dragLeaveItem(event)"
+      ondrop="dropItem(event, ${p.id})"
+      ondragend="dragEndItem(event)"
+      onclick="tryEditProduct(${p.id})">
+      <span class="pli-handle" title="Arrastar para reordenar" onclick="event.stopPropagation()">⠿</span>
+      <span class="pli-emoji">${thumbOf(p)}</span>
+      <div class="pli-info">
+        <div class="pli-name">${p.name}${p.id === editingId && isDirty ? '<span class="dirty-dot"></span>' : ''}</div>
+        <div class="pli-price">R$ ${Number(p.price).toFixed(2).replace('.',',')} · ${CAT_LABELS[p.category] || p.category}${unavail ? ' · <span class="pli-unavail-tag">Indisponível</span>' : ''}</div>
+      </div>
+      <button class="pli-del" title="Esgotar / reabrir" onclick="event.stopPropagation();quickSoldOut(${p.id})">${unavail?'↺':'🚫'}</button>
+      <button class="pli-del" title="Duplicar" onclick="event.stopPropagation();dupProduct(${p.id})">⧉</button>
+      <button class="pli-del" onclick="event.stopPropagation();confirmDeleteProduct(${p.id})">🗑</button>
+    </div>`;
+  }).join('');
+}
+
+// ─── DRAG & DROP (reordenar produtos) ──────────────────────────────────────
+let dragSourceId = null;
+
+function dragStartItem(e, id) {
+  dragSourceId = id;
+  e.dataTransfer.effectAllowed = 'move';
+  try { e.dataTransfer.setData('text/plain', String(id)); } catch (_) {}
+  e.currentTarget.classList.add('dragging');
+}
+
+function dragOverItem(e, id) {
+  e.preventDefault();
+  if (dragSourceId === null || dragSourceId === id) return;
+  const targetUnavail = isProductUnavailable(products.find(p => p.id === id));
+  const sourceUnavail = isProductUnavailable(products.find(p => p.id === dragSourceId));
+  // Não permite soltar um disponível depois de um indisponível (ou vice-versa) visualmente,
+  // já que enforceUnavailableAtEnd() vai reagrupar de qualquer forma — apenas evita um "piscar" confuso.
+  if (targetUnavail !== sourceUnavail) { e.currentTarget.classList.remove('drag-over'); return; }
+  e.currentTarget.classList.add('drag-over');
+  e.dataTransfer.dropEffect = 'move';
+}
+
+function dragLeaveItem(e) {
+  e.currentTarget.classList.remove('drag-over');
+}
+
+function dragEndItem(e) {
+  e.currentTarget.classList.remove('dragging');
+  document.querySelectorAll('.product-list-item.drag-over').forEach(el => el.classList.remove('drag-over'));
+  dragSourceId = null;
+}
+
+function dropItem(e, targetId) {
+  e.preventDefault();
+  e.currentTarget.classList.remove('drag-over');
+  const sourceId = dragSourceId;
+  dragSourceId = null;
+  if (sourceId === null || sourceId === targetId) return;
+
+  const sourceIdx = products.findIndex(p => p.id === sourceId);
+  const targetIdx = products.findIndex(p => p.id === targetId);
+  if (sourceIdx === -1 || targetIdx === -1) return;
+
+  const [moved] = products.splice(sourceIdx, 1);
+  const newTargetIdx = products.findIndex(p => p.id === targetId);
+  products.splice(newTargetIdx, 0, moved);
+
+  saveLocal();
+  renderList();
+  showToast('Ordem atualizada');
+}
+let isDirty = false;
+let modalCallback = null;
+
+function markDirty() {
+  isDirty = true;
+  document.getElementById('dirtyBadge').classList.add('visible');
+  renderList();
+}
+function clearDirty() {
+  isDirty = false;
+  document.getElementById('dirtyBadge').classList.remove('visible');
+  renderList();
+}
+
+// ─── MODAL ─────────────────────────────────────────────────────────────────
+function openModal({ icon = '⚠️', title, desc, confirmLabel = 'Confirmar', danger = false, onConfirm }) {
+  document.getElementById('modalIcon').textContent = icon;
+  document.getElementById('modalTitle').textContent = title;
+  document.getElementById('modalDesc').textContent = desc;
+  const btn = document.getElementById('modalConfirm');
+  btn.textContent = confirmLabel;
+  btn.className = 'modal-confirm' + (danger ? ' danger' : '');
+  modalCallback = onConfirm;
+  document.getElementById('modalOverlay').classList.add('open');
+}
+function closeModal() {
+  document.getElementById('modalOverlay').classList.remove('open');
+  modalCallback = null;
+}
+function confirmModal() {
+  const cb = modalCallback;
+  closeModal();
+  if (cb) cb();
+}
+
+document.getElementById('modalOverlay').addEventListener('click', function(e) {
+  if (e.target === this) closeModal();
+});
+
+function confirmDeleteProduct(id) {
+  const p = products.find(x => x.id === id);
+  openModal({
+    icon: '🗑️', title: 'Remover produto?',
+    desc: `"${p?.name}" será removido permanentemente da lista local. Esta ação não pode ser desfeita.`,
+    confirmLabel: 'Remover', danger: true,
+    onConfirm: () => deleteProduct(id),
+  });
+}
+
+function deleteProduct(id) {
+  products = products.filter(p => p.id !== id);
+  if (editingId === id) { editingId = null; isDirty = false; showEditor(false); }
+  saveLocal(); renderList();
+  showToast('Produto removido', 'var(--danger)');
+}
+
+function tryEditProduct(id) {
+  if (editingId === id) return;
+  if (isDirty) {
+    openModal({
+      icon: '⚠️', title: 'Alterações não salvas',
+      desc: 'Você tem alterações não salvas no produto atual. Deseja descartá-las e abrir outro produto?',
+      confirmLabel: 'Descartar e abrir', danger: true,
+      onConfirm: () => { isDirty = false; editProduct(id); },
+    });
+    return;
+  }
+  editProduct(id);
+}
+
+function newProduct() {
+  const doCreate = () => {
+    const p = { id: nextId(), name: 'Novo Produto', category: 'feminino', price: 0, emoji: '👗', img: [], desc: '', colors: [], sizes: [], unavailable: [], badge: null };
+    products.unshift(p);
+    isDirty = false;
+    saveLocal(); renderList();
+    editProduct(p.id);
+  };
+  if (isDirty) {
+    openModal({
+      icon: '⚠️', title: 'Alterações não salvas',
+      desc: 'Você tem alterações não salvas. Deseja descartá-las e criar um novo produto?',
+      confirmLabel: 'Descartar e criar', danger: true,
+      onConfirm: doCreate,
+    });
+  } else { doCreate(); }
+}
+
+// ─── EDITOR ────────────────────────────────────────────────────────────────
+function editProduct(id) {
+  editingId = id;
+  isDirty = false;
+  uploadQueue = [];
+  renderUploadQueue();
+
+  const p = products.find(x => x.id === id);
+  if (!p) return;
+  document.getElementById('f-name').value  = p.name;
+  document.getElementById('f-emoji').value = p.emoji || '👗';
+  document.getElementById('f-price').value = p.price;
+  document.getElementById('f-cat').value   = p.category;
+  document.getElementById('f-desc').value  = p.desc || '';
+  document.getElementById('f-badge').value = p.badge || '';
+  document.getElementById('f-old').value   = p.oldPrice || '';
+  editSizes  = [...p.sizes];
+  editUnavail = [...p.unavailable];
+  editColors = (p.colors || []).map(c => ({...c}));
+  editImgs   = Array.isArray(p.img) ? [...p.img] : (p.img ? [p.img] : []);
+  renderSizes(); renderColors(); renderImgs();
+  document.getElementById('editorHeading').textContent = p.name;
+  document.getElementById('dirtyBadge').classList.remove('visible');
+
+  ['f-name','f-emoji','f-price','f-cat','f-desc','f-badge','f-old'].forEach(id => {
+    const el = document.getElementById(id);
+    el.oninput = () => markDirty();
+    el.onchange = () => markDirty();
+  });
+
+  showEditor(true); renderList();
+}
+
+function showEditor(show) {
+  document.body.classList.toggle('editing', show);
+  document.getElementById('emptyState').style.display  = show ? 'none' : 'flex';
+  document.getElementById('editorForm').style.display  = show ? 'block' : 'none';
+}
+
+function saveProduct() {
+  const idx = products.findIndex(x => x.id === editingId);
+  if (idx < 0) return;
+  const name = document.getElementById('f-name').value.trim();
+  if (!name) { showToast('Informe o nome do produto', 'var(--danger)'); return; }
+  const price = parseFloat(document.getElementById('f-price').value);
+  if (isNaN(price) || price < 0) { showToast('Preço inválido', 'var(--danger)'); return; }
+  products[idx] = {
+    ...products[idx], name,
+    emoji:    document.getElementById('f-emoji').value.trim() || '👗',
+    price, category: document.getElementById('f-cat').value,
+    desc:     document.getElementById('f-desc').value.trim(),
+    badge:    document.getElementById('f-badge').value.trim() || null,
+    oldPrice: parseFloat(document.getElementById('f-old').value) || undefined,
+    img:      editImgs.length === 1 ? editImgs[0] : editImgs,
+    colors:   editColors.filter(c => c.name.trim()),
+    sizes:    editSizes,
+    unavailable: editUnavail.filter(s => editSizes.includes(s)),
+  };
+  document.getElementById('editorHeading').textContent = name;
+  saveLocal(); renderList(); clearDirty();
+  document.body.classList.remove('editing');
+  showToast('✓ Produto salvo! Toque em Publicar para enviar ao site.');
+}
+
+// ─── PALETA ────────────────────────────────────────────────────────────────
+function getAllUsedColors() {
+  const map = new Map();
+  products.forEach(p => (p.colors || []).forEach(c => {
+    if (c.name && c.hex) { const k = c.name.toLowerCase().trim(); if (!map.has(k)) map.set(k, {...c}); }
+  }));
+  return Array.from(map.values()).sort((a,b) => a.name.localeCompare(b.name));
+}
+
+function renderPalette() {
+  const palette = getAllUsedColors();
+  const grid = document.getElementById('paletteGrid');
+  if (!grid) return;
+  if (!palette.length) { grid.innerHTML = '<span style="font-size:11px;color:var(--muted)">Nenhuma cor cadastrada.</span>'; return; }
+  grid.innerHTML = palette.map(c => {
+    const already = editColors.some(e => e.name.toLowerCase().trim() === c.name.toLowerCase().trim());
+    return `<div class="palette-dot" style="background:${c.hex}" data-already="${already}"
+      data-name="${c.name}" data-hex="${c.hex}"
+      onclick="paletteAdd('${c.name}','${c.hex}')"
+      onmouseenter="paletteHover(event,'${c.name}')"
+      onmouseleave="paletteLeave()"></div>`;
+  }).join('');
+}
+
+function paletteAdd(name, hex) {
+  if (editColors.some(e => e.name.toLowerCase().trim() === name.toLowerCase().trim())) return;
+  editColors.push({ name, hex }); renderColors(); markDirty(); showToast(`✓ ${name} adicionada`);
+}
+function paletteHover(e, name) {
+  const t = document.getElementById('paletteTooltip');
+  t.textContent = name; t.style.display = 'block';
+  t.style.left = (e.clientX + 10) + 'px'; t.style.top = (e.clientY - 28) + 'px';
+}
+function paletteLeave() { document.getElementById('paletteTooltip').style.display = 'none'; }
+
+// ─── CORES ─────────────────────────────────────────────────────────────────
+function renderColors() {
+  document.getElementById('colorsList').innerHTML = editColors.map((c, i) => `
+    <div class="color-row">
+      <input type="color" class="color-preview-input" value="${c.hex || '#888888'}" oninput="editColors[${i}].hex=this.value;renderPalette();markDirty()">
+      <input class="color-name-input" type="text" value="${c.name}" placeholder="Nome da cor" oninput="editColors[${i}].name=this.value;markDirty()">
+      <button class="btn-remove-color" onclick="removeColor(${i})">✕</button>
+    </div>`).join('');
+  renderPalette();
+}
+function addColor() {
+  editColors.push({ name: '', hex: '#888888' }); renderColors(); markDirty();
+  const inputs = document.querySelectorAll('.color-name-input');
+  if (inputs.length) inputs[inputs.length - 1].focus();
+}
+function removeColor(i) { editColors.splice(i, 1); renderColors(); markDirty(); }
+
+// ─── TAMANHOS ──────────────────────────────────────────────────────────────
+function renderSizes() {
+  document.getElementById('sizesArea').innerHTML = editSizes.map((s, i) => {
+    const u = editUnavail.includes(s);
+    return `<div class="size-tag ${u ? 'unavail' : ''}">
+      <span>${s}</span>
+      <button class="unavail-toggle ${u ? 'unavail' : 'avail'}" onclick="toggleUnavail('${s}')">${u ? 'Indis.' : 'Disp.'}</button>
+      <button class="size-tag-del" onclick="removeSize(${i})">✕</button>
+    </div>`;
+  }).join('');
+  renderSizePalette();
+}
+function normalizeSizeInput(raw) {
+  const trimmed = raw.trim();
+  const lower = trimmed.toLowerCase();
+  if (lower === 'unico' || lower === 'único' || lower === 'tamanho unico' || lower === 'tamanho único') {
+    return 'Tamanho único';
+  }
+  return trimmed.toUpperCase();
+}
+function addSize() {
+  const inp = document.getElementById('sizeInput');
+  const val = normalizeSizeInput(inp.value);
+  if (!val) return;
+  if (editSizes.includes(val)) { showToast('Tamanho já existe', 'var(--danger)'); return; }
+  editSizes.push(val); inp.value = ''; renderSizes(); markDirty();
+}
+function removeSize(i) { const s = editSizes[i]; editSizes.splice(i, 1); editUnavail = editUnavail.filter(x => x !== s); renderSizes(); markDirty(); }
+function toggleUnavail(s) {
+  if (editUnavail.includes(s)) editUnavail = editUnavail.filter(x => x !== s);
+  else editUnavail.push(s);
+  renderSizes(); markDirty();
+}
+
+// ─── PALETA DE TAMANHOS ─────────────────────────────────────────────────────
+function getAllUsedSizes() {
+  const set = new Set();
+  products.forEach(p => (p.sizes || []).forEach(s => {
+    const norm = normalizeStoredSize(s);
+    if (norm && norm.trim()) set.add(norm.trim());
+  }));
+  return Array.from(set).sort((a, b) => {
+    if (a === 'Tamanho único') return -1;
+    if (b === 'Tamanho único') return 1;
+    return a.localeCompare(b);
+  });
+}
+function renderSizePalette() {
+  const grid = document.getElementById('sizePaletteGrid');
+  if (!grid) return;
+  const palette = getAllUsedSizes();
+  if (!palette.length) { grid.innerHTML = '<span style="font-size:11px;color:var(--muted)">Nenhum tamanho cadastrado.</span>'; return; }
+  grid.innerHTML = palette.map(s => {
+    const already = editSizes.includes(s);
+    return `<button type="button" class="size-palette-tag" data-already="${already}" onclick="paletteAddSize('${s.replace(/'/g, "\\'")}')">${s}</button>`;
+  }).join('');
+}
+function paletteAddSize(size) {
+  if (editSizes.includes(size)) return;
+  editSizes.push(size); renderSizes(); markDirty(); showToast(`✓ ${size} adicionado`);
+}
+
+// ─── FOTOS (paths manuais) ──────────────────────────────────────────────────
+function renderImgs() {
+  document.getElementById('imgsList').innerHTML = editImgs.map((src, i) => `
+    <div class="thumb"><img src="${previewMap[src]||src}" alt="" onerror="this.style.opacity=.2">
+      ${i===0?'<span class="tmain">Principal</span>':`<button title="Tornar principal" onclick="makeMain(${i})">★</button>`}
+      <button title="Remover" onclick="removeImg(${i})">✕</button></div>`).join('');
+}
+function addImg() {
+  const p = prompt('Caminho da foto (ex: fotos/nome.jpeg)');
+  if (p && p.trim()) { editImgs.push(p.trim()); renderImgs(); markDirty(); }
+}
+function removeImg(i) { editImgs.splice(i, 1); renderImgs(); markDirty(); }
+
+// ─── UPLOAD DE FOTOS ────────────────────────────────────────────────────────
+function suggestPath(filename) {
+  // Normaliza: minúsculas, remove acentos, troca espaços por _ , mantém extensão
+  const clean = filename
+    .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+    .replace(/\s+/g, '_')
+    .replace(/[^a-zA-Z0-9._-]/g, '')
+    .toLowerCase();
+  return 'fotos/' + clean;
+}
+
+function handleFileSelect(e) {
+  addFilesToQueue([...e.target.files]);
+  e.target.value = ''; // reset para permitir selecionar mesmo arquivo novamente
+}
+
+function handleDragOver(e) {
+  e.preventDefault();
+  document.getElementById('dropzone').classList.add('dragging');
+}
+function handleDragLeave() {
+  document.getElementById('dropzone').classList.remove('dragging');
+}
+function handleDrop(e) {
+  e.preventDefault();
+  document.getElementById('dropzone').classList.remove('dragging');
+  const files = [...e.dataTransfer.files].filter(f => f.type.startsWith('image/'));
+  if (!files.length) { showToast('Apenas imagens são aceitas', 'var(--danger)'); return; }
+  addFilesToQueue(files);
+}
+
+async function addFilesToQueue(files) {
+  const slug = (document.getElementById('f-name').value || 'foto').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().replace(/[^a-z0-9]+/g,'_').replace(/^_|_$/g,'') || 'foto';
+  for (const file of files) {
+    if (!file.type.startsWith('image/')) continue;
+    const blob = await compressImg(file);
+    const f = new File([blob], slug + '_' + Date.now().toString(36) + '.jpg', { type: 'image/jpeg' });
+    uploadQueue.push({ file: f, path: suggestPath(f.name), status: 'pending', objectUrl: URL.createObjectURL(f) });
+  }
+  renderUploadQueue();
+  uploadAllToGitHub(); // envia sozinho, sem precisar de outro toque
+}
+
+function renderUploadQueue() {
+  const container = document.getElementById('uploadQueue');
+  const btn = document.getElementById('btnUploadAll');
+  const hint = document.getElementById('uploadHint');
+
+  if (!uploadQueue.length) {
+    container.innerHTML = '';
+    btn.style.display = 'none';
+    hint.style.display = 'none';
+    return;
+  }
+
+  btn.style.display = 'flex';
+  hint.style.display = 'block';
+
+  const statusIcons = { pending: '⏳ Aguardando', uploading: '⬆️ Enviando...', ok: '✓ Enviado', err: '✗ Erro' };
+
+  container.innerHTML = uploadQueue.map((item, i) => `
+    <div class="upload-item">
+      <img class="upload-thumb" src="${item.objectUrl}" alt="">
+      <div class="upload-info">
+        <div class="upload-filename">${item.file.name}</div>
+        <input class="upload-path-input" type="text" value="${item.path}"
+          oninput="uploadQueue[${i}].path=this.value"
+          placeholder="fotos/nome.jpeg"
+          ${item.status !== 'pending' ? 'readonly' : ''}>
+        <div class="upload-status ${item.status}">${statusIcons[item.status]}${item.errMsg ? ' — ' + item.errMsg : ''}</div>
+      </div>
+      ${item.status === 'pending' || item.status === 'err'
+        ? `<button class="upload-remove" onclick="removeFromQueue(${i})">✕</button>`
+        : '<span></span>'}
+    </div>`).join('');
+
+  // Atualiza estado do botão: desabilita se tudo já foi enviado ou está em andamento
+  const hasPending = uploadQueue.some(i => i.status === 'pending' || i.status === 'err');
+  btn.disabled = !hasPending;
+  btn.textContent = hasPending ? '☁️ Enviar fotos para o repositório' : '✓ Todas enviadas';
+}
+
+function removeFromQueue(i) {
+  URL.revokeObjectURL(uploadQueue[i].objectUrl);
+  uploadQueue.splice(i, 1);
+  renderUploadQueue();
+}
+
+// Converte File → base64 (sem header data:...)
+function fileToBase64(file) {
+  return new Promise((res, rej) => {
+    const reader = new FileReader();
+    reader.onload = () => {
+      const result = reader.result; // "data:image/jpeg;base64,XXXX"
+      res(result.split(',')[1]);
+    };
+    reader.onerror = rej;
+    reader.readAsDataURL(file);
+  });
+}
+
+async function uploadSingleFile(item, owner, repo, token) {
+  const apiUrl = `https://api.github.com/repos/${owner}/${repo}/contents/${item.path}`;
+  const headers = {
+    'Authorization': `Bearer ${token}`,
+    'Accept': 'application/vnd.github+json',
+    'X-GitHub-Api-Version': '2022-11-28',
+  };
+
+  // Verifica se o arquivo já existe (para pegar o SHA e sobrescrever)
+  let sha = null;
+  try {
+    const check = await fetch(apiUrl, { headers });
+    if (check.ok) {
+      const data = await check.json();
+      sha = data.sha;
+    }
+  } catch (_) {}
+
+  const content = await fileToBase64(item.file);
+  const body = {
+    message: `[Admin] Upload foto: ${item.path}`,
+    content,
+  };
+  if (sha) body.sha = sha; // sobrescreve se já existe
+
+  const res = await fetch(apiUrl, {
+    method: 'PUT',
+    headers: { ...headers, 'Content-Type': 'application/json' },
+    body: JSON.stringify(body),
+  });
+
+  if (!res.ok) {
+    const err = await res.json();
+    if (res.status === 401) throw new Error('Token inválido (401)');
+    if (res.status === 403) throw new Error('Sem permissão (403)');
+    throw new Error(err.message || `Erro ${res.status}`);
+  }
+}
+
+async function uploadAllToGitHub() {
+  const { owner, repo, token } = getGhParams();
+  if (!owner || !repo || !token) {
+    showToast('Preencha usuário, repositório e token na sidebar', 'var(--danger)');
+    return;
+  }
+
+  const pending = uploadQueue.filter(i => i.status === 'pending' || i.status === 'err');
+  if (!pending.length) return;
+
+  document.getElementById('btnUploadAll').disabled = true;
+
+  let okCount = 0, errCount = 0;
+
+  for (let i = 0; i < uploadQueue.length; i++) {
+    const item = uploadQueue[i];
+    if (item.status !== 'pending' && item.status !== 'err') continue;
+
+    uploadQueue[i].status = 'uploading';
+    uploadQueue[i].errMsg = '';
+    renderUploadQueue();
+
+    try {
+      await uploadSingleFile(item, owner, repo, token);
+      uploadQueue[i].status = 'ok';
+      previewMap[uploadQueue[i].path] = uploadQueue[i].objectUrl;
+
+      // Adiciona o caminho aos imgs do produto automaticamente
+      const path = uploadQueue[i].path;
+      if (!editImgs.includes(path)) {
+        editImgs.push(path);
+        renderImgs();
+        markDirty();
+      }
+
+      okCount++;
+    } catch (err) {
+      uploadQueue[i].status = 'err';
+      uploadQueue[i].errMsg = err.message;
+      errCount++;
+    }
+
+    renderUploadQueue();
+  }
+
+  if (okCount > 0 && errCount === 0) {
+    showToast(`✓ ${okCount} foto(s) enviada(s)! Salve o produto para confirmar.`);
+  } else if (errCount > 0) {
+    showToast(`${okCount} ok, ${errCount} com erro — veja detalhes acima`, 'var(--danger)');
+  }
+}
+
+// ─── ENCODING HELPERS ──────────────────────────────────────────────────────
+function b64ToUtf8(b64) {
+  const binary = atob(b64.replace(/\n/g, ''));
+  const bytes = new Uint8Array(binary.length);
+  for (let i = 0; i < binary.length; i++) bytes[i] = binary.charCodeAt(i);
+  return new TextDecoder('utf-8').decode(bytes);
+}
+
+function utf8ToB64(str) {
+  const bytes = new TextEncoder().encode(str);
+  let binary = '';
+  const chunk = 8192;
+  for (let i = 0; i < bytes.length; i += chunk) {
+    binary += String.fromCharCode(...bytes.subarray(i, i + chunk));
+  }
+  return btoa(binary);
+}
+
+// ─── GITHUB API (PRODUCTS BLOCK) ───────────────────────────────────────────
+function generateProductsBlock() {
+  return 'const PRODUCTS = ' + JSON.stringify(products, null, 2) + ';';
+}
+
+function findProductsBlock(text) {
+  const start = text.search(/const PRODUCTS\s*=\s*\[/);
+  if (start === -1) return null;
+  const bracketStart = text.indexOf('[', start);
+  let depth = 0, i = bracketStart, q = null;
+  while (i < text.length) {
+    const ch = text[i];
+    if (q) { if (ch === '\\') i++; else if (ch === q) q = null; }
+    else if (ch === '"' || ch === "'" || ch === '`') q = ch;
+    else if (ch === '[') depth++;
+    else if (ch === ']') { depth--; if (depth === 0) break; }
+    i++;
+  }
+  let end = i + 1;
+  while (end < text.length && (text[end] === ' ' || text[end] === '\n' || text[end] === '\r')) end++;
+  if (text[end] === ';') end++;
+  return { start, end };
+}
+
+function confirmPublish() {
+  if (isDirty) {
+    openModal({
+      icon: '⚠️', title: 'Produto não salvo',
+      desc: 'Você tem alterações não salvas no produto atual. Salve antes de publicar para garantir que as mudanças sejam enviadas ao site.',
+      confirmLabel: 'Entendido', danger: false, onConfirm: () => {},
+    });
+    return;
+  }
+  openModal({
+    icon: '🚀', title: 'Publicar no site?',
+    desc: `Isso vai sobrescrever o arquivo no GitHub com os ${products.length} produtos atuais. O site ficará atualizado em alguns segundos.`,
+    confirmLabel: 'Publicar agora', danger: false,
+    onConfirm: publishToGitHub,
+  });
+}
+
+async function publishToGitHub() {
+  const { owner, repo, token } = getGhParams();
+  const file = document.getElementById('ghFile').value.trim() || 'index.html';
+
+  if (!owner || !repo || !token) {
+    showToast('Preencha usuário, repositório e token', 'var(--danger)'); return;
+  }
+
+  saveGhConfig();
+
+  const btn = document.getElementById('btnPublish');
+  btn.disabled = true;
+  btn.textContent = '⏳ Publicando...';
+  setGhStatus('loading', 'Buscando arquivo no GitHub...');
+
+  const debugLog = [];
+  const dbg = (msg) => { debugLog.push(msg); console.log('[GG Admin]', msg); };
+
+  try {
+    const apiBase = `https://api.github.com/repos/${owner}/${repo}/contents/${file}`;
+    const headers = {
+      'Authorization': `Bearer ${token}`,
+      'Accept': 'application/vnd.github+json',
+      'X-GitHub-Api-Version': '2022-11-28',
+    };
+
+    dbg(`GET ${apiBase}`);
+    const getRes = await fetch(apiBase, { headers });
+    dbg(`GET status: ${getRes.status}`);
+    if (!getRes.ok) {
+      const err = await getRes.json();
+      if (getRes.status === 401) throw new Error('Token inválido ou expirado (401).');
+      if (getRes.status === 403) throw new Error('Sem permissão (403). O token precisa de escopo "repo".');
+      if (getRes.status === 404) throw new Error(`Arquivo não encontrado (404). Verifique: usuário="${owner}", repo="${repo}", arquivo="${file}".`);
+      throw new Error(err.message || `Erro ${getRes.status} ao buscar arquivo`);
+    }
+    const fileData = await getRes.json();
+    const sha = fileData.sha;
+    dbg(`SHA obtido: ${sha}`);
+
+    setGhStatus('loading', 'Substituindo bloco PRODUCTS...');
+    const currentContent = b64ToUtf8(fileData.content);
+    const newBlock = generateProductsBlock();
+    const blockInfo = findProductsBlock(currentContent);
+    if (!blockInfo) throw new Error('Bloco "const PRODUCTS = [...];" não encontrado no arquivo.');
+    const newContent = currentContent.slice(0, blockInfo.start) + newBlock + currentContent.slice(blockInfo.end);
+
+    setGhStatus('loading', 'Enviando para o GitHub...');
+    const now = new Date().toLocaleString('pt-BR', { timeZone: 'America/Sao_Paulo' });
+    const putRes = await fetch(apiBase, {
+      method: 'PUT',
+      headers: { ...headers, 'Content-Type': 'application/json' },
+      body: JSON.stringify({ message: `[Admin] Atualiza produtos — ${now}`, content: utf8ToB64(newContent), sha }),
+    });
+
+    if (!putRes.ok) {
+      const err = await putRes.json();
+      if (putRes.status === 401) throw new Error('Token inválido ou expirado (401).');
+      if (putRes.status === 403) throw new Error('Sem permissão para escrever (403).');
+      if (putRes.status === 409) throw new Error('Conflito (409): arquivo alterado no GitHub. Tente de novo.');
+      if (putRes.status === 422) throw new Error('Erro de validação (422): ' + (err.message || 'conteúdo inválido'));
+      throw new Error(err.message || `Erro ${putRes.status} ao publicar`);
+    }
+
+    setGhStatus('ok', '✓ Publicado com sucesso!');
+    clearPub();
+    showToast('🚀 Site atualizado no GitHub!');
+
+  } catch (err) {
+    console.error('[GG Admin] ERRO:', err);
+    setGhStatus('err', err.message);
+    showToast('Erro: ' + err.message, 'var(--danger)');
+  } finally {
+    btn.disabled = false;
+    btn.textContent = '🚀 Publicar no site';
+  }
+}
+
+function confirmSyncFromGitHub() {
+  const { owner, repo, token } = getGhParams();
+  const file = document.getElementById('ghFile').value.trim() || 'index.html';
+  if (!owner || !repo || !token) {
+    showToast('Preencha usuário, repositório e token', 'var(--danger)'); return;
+  }
+  openModal({
+    icon: '🔄', title: 'Atualizar do GitHub?',
+    desc: `Isso vai buscar o arquivo "${file}" no GitHub e substituir TODOS os produtos aqui no admin pelos que estão publicados agora. Qualquer alteração feita aqui e ainda não publicada será perdida.`,
+    confirmLabel: 'Atualizar agora', danger: true,
+    onConfirm: syncFromGitHub,
+  });
+}
+
+async function syncFromGitHub() {
+  const { owner, repo, token } = getGhParams();
+  const file = document.getElementById('ghFile').value.trim() || 'index.html';
+
+  if (!owner || !repo || !token) {
+    showToast('Preencha usuário, repositório e token', 'var(--danger)'); return;
+  }
+
+  saveGhConfig();
+
+  const btn = document.getElementById('btnSync');
+  btn.disabled = true;
+  btn.textContent = '⏳ Buscando...';
+  setGhStatus('loading', 'Buscando arquivo no GitHub...');
+
+  try {
+    const apiBase = `https://api.github.com/repos/${owner}/${repo}/contents/${file}`;
+    const headers = {
+      'Authorization': `Bearer ${token}`,
+      'Accept': 'application/vnd.github+json',
+      'X-GitHub-Api-Version': '2022-11-28',
+    };
+
+    const getRes = await fetch(apiBase, { headers });
+    if (!getRes.ok) {
+      const err = await getRes.json();
+      if (getRes.status === 401) throw new Error('Token inválido ou expirado (401).');
+      if (getRes.status === 403) throw new Error('Sem permissão (403). O token precisa de escopo "repo".');
+      if (getRes.status === 404) throw new Error(`Arquivo não encontrado (404). Verifique: usuário="${owner}", repo="${repo}", arquivo="${file}".`);
+      throw new Error(err.message || `Erro ${getRes.status} ao buscar arquivo`);
+    }
+    const fileData = await getRes.json();
+    const currentContent = b64ToUtf8(fileData.content);
+
+    const blockInfo = findProductsBlock(currentContent);
+    if (!blockInfo) throw new Error('Bloco "const PRODUCTS = [...];" não encontrado no arquivo do GitHub.');
+
+    const bracketStart = currentContent.indexOf('[', blockInfo.start);
+    let bracketEnd = blockInfo.end;
+    while (bracketEnd > bracketStart && currentContent[bracketEnd - 1] !== ']') bracketEnd--;
+    const arrayText = currentContent.slice(bracketStart, bracketEnd);
+
+    let remoteProducts;
+    try {
+      remoteProducts = JSON.parse(arrayText);
+    } catch (e) {
+      // primeira vez: o index ainda está em formato JS (sem aspas nas chaves)
+      try { remoteProducts = new Function('return ' + arrayText)(); }
+      catch (e2) { throw new Error('Não foi possível interpretar o bloco de produtos do GitHub (formato inesperado).'); }
+    }
+    if (!Array.isArray(remoteProducts)) throw new Error('O bloco de produtos do GitHub não é uma lista válida.');
+
+    // Normaliza tamanhos (ex: corrige "UNICO" antigo) ao trazer do GitHub
+    remoteProducts.forEach(p => {
+      if (Array.isArray(p.sizes)) p.sizes = p.sizes.map(normalizeStoredSize);
+      if (Array.isArray(p.unavailable)) p.unavailable = p.unavailable.map(normalizeStoredSize);
+    });
+
+    products = remoteProducts;
+    saveLocal();
+    editingId = null;
+    clearDirty();
+    showEditor(false);
+    showToast(`✓ ${products.length} produtos atualizados a partir do GitHub`);
+    setGhStatus('ok', '✓ Sincronizado com o GitHub');
+    clearPub();
+
+  } catch (err) {
+    console.error('[GG Admin] ERRO SYNC:', err);
+    setGhStatus('err', err.message);
+    showToast('Erro: ' + err.message, 'var(--danger)');
+  } finally {
+    btn.disabled = false;
+    btn.textContent = '🔄 Atualizar do GitHub';
+  }
+}
+
+loadGhConfig();
+renderList();
+syncPub();
+document.querySelectorAll('.gh-config input, #ghRemember').forEach(e => e.addEventListener('change', saveGhConfig));
+if (!document.getElementById('ghOwner').value || !document.getElementById('ghToken').value) document.body.classList.add('gh-open');
+</script>
+</body>
+</html>
