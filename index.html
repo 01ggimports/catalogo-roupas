@@ -812,14 +812,7 @@ const BANNERS = [ // img: "fotos/banner1.jpg" (opcional) no lugar do degradê
   {title:"Peça em 1 minuto",sub:"Escolha, monte a sacola e finalize pelo WhatsApp.",cta:"Ver catálogo",act:"catalogo",bg:"linear-gradient(135deg,#ea580c,#e0246f)"}
 ];
 const COUPONS = [
-  {
-    "code": "EXEMPLO10",
-    "type": "percent",
-    "value": 10,
-    "min": 0,
-    "expires": "",
-    "active": false
-  }
+  {"code":"EXEMPLO10","type":"percent","value":10,"min":0,"expires":"","active":false}
 ];
 let coupon = null, heroIdx = 0, heroTimer;
 function initHero(){
@@ -864,7 +857,7 @@ function applyCoupon(){
   else { coupon=c; inp.value=''; msg.textContent=''; renderCart(); showToast('✓ Cupom aplicado!'); }
 }
 function removeCoupon(){ coupon=null; renderCart(); }
-const CAT_LABELS = { feminino:"Feminino", masculino:"Masculino", vestido:"Vestidos", casual:"Casual", plus:"Plus Size" };
+const CAT_LABELS = { feminino:"Feminino", masculino:"Masculino", sapatos:"Sapatos", bolsas:"Bolsas", vestido:"Vestidos", casual:"Casual", plus:"Plus Size" };
 let searchTerm = '';
 function norm(t){ return (t||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase(); }
 function matchSearch(p){
@@ -878,7 +871,8 @@ function priceHtml(p){
   return (o?`<span class="old-price">${formatPrice(p.oldPrice)}</span>`:'')+formatPrice(p.price)+(o?`<span class="off">-${o}%</span>`:'');
 }
 function buildFilters(){
-  const cats=[...new Set(PRODUCTS.map(p=>p.category))];
+  const order=Object.keys(CAT_LABELS);
+  const cats=[...new Set(PRODUCTS.map(p=>p.category))].sort((a,b)=>{const ia=order.indexOf(a),ib=order.indexOf(b);return (ia<0?99:ia)-(ib<0?99:ib);});
   document.getElementById('filters').innerHTML=['all',...cats].map((c,i)=>`<button class="chip${i?'':' active'}" onclick="filterCat('${c}', this)">${c==='all'?'Tudo':categoryLabel(c)}</button>`).join('');
 }
 function renderRelated(p){
@@ -903,1046 +897,186 @@ function cartQty(i,d){ cart[i].qty+=d; if(cart[i].qty<1){ removeItem(i); return;
 
 const PRODUCTS = [
   {
-    "id": 23,
-    "name": "BABY TEE SUPLEX",
-    "category": "feminino",
-    "price": 29.99,
-    "emoji": "👗",
-    "img": [
-      "fotos/baby_tee_suplex_muzzovnc.jpg",
-      "fotos/baby_tee_suplex_muzzoz8g.jpg"
-    ],
-    "desc": "Modelo: Baby Tee Poliéster\nTecido: Suplex Romantic\nComposição: 92% Poliéster | 8% Elastano\nGramatura: 190\nModelagem: Justa ao corpo\nDecote: Redondo\nElasticidade: Média\nForro: Duplo na região do busto\nRecomendação de Vestimenta: Veste aproximadamente do 36 ao 40.",
-    "colors": [
-      {
-        "name": "Azul Turquesa",
-        "hex": "#30D5C8"
-      },
-      {
-        "name": "Rosa",
-        "hex": "#e8a0b0"
-      }
-    ],
-    "sizes": [
-      "Tamanho único"
-    ],
-    "unavailable": [],
-    "badge": "NOVO"
+    id: 1,
+    name: "BabyTee Gola Alta",
+    category: "feminino",
+    price: 65,
+    emoji: "👗",
+    img: ["fotos/babytee.jpeg","fotos/babytee2.jpeg"],
+    desc: "Peça coringa para todas as estações. Tamanho único veste do 36 ao 40.",
+    colors: [{name:"Preto",hex:"#1a1a1a"},{name:"Cinza",hex:"#808080"},{name:"Off-White",hex:"#e8dcc8"},{name:"Verde Escuro",hex:"#013220"},{name:"Rosa",hex:"#e8a0b0"},{name:"Chocolate",hex:"#D2691E"}],
+    sizes: ["Tamanho único"],
+    unavailable: [],
+    badge: "Novo"
   },
   {
-    "id": 22,
-    "name": "BLUSA RECORTE GOLA",
-    "category": "feminino",
-    "price": 49.99,
-    "emoji": "👗",
-    "img": [
-      "fotos/blusa_recorte_gola_muzyulp3.jpg",
-      "fotos/blusa_recorte_gola_muzyuqfv.jpg"
-    ],
-    "desc": "Detalhes da peça:\n\nTecido: 90% Poliamida | 10% Elastano\nForro do próprio tecido (zero transparência)\nGola alta com amarração\nRecortes frontais\nModelagem ajustada ao corpo\nToque macio e geladinho\nAlta elasticidade\nProteção solar UV 50+\nSecagem rápida",
-    "colors": [
-      {
-        "name": "Preto",
-        "hex": "#1a1a1a"
-      },
-      {
-        "name": "Branco",
-        "hex": "#f0ece4"
-      },
-      {
-        "name": "Cinza",
-        "hex": "#808080"
-      },
-      {
-        "name": "Amarelo",
-        "hex": "#FFFF00"
-      },
-      {
-        "name": "Marrom",
-        "hex": "#964B00"
-      },
-      {
-        "name": "Azul Bebê",
-        "hex": "#3c6ee2"
-      },
-      {
-        "name": "Rosa",
-        "hex": "#e8a0b0"
-      }
-    ],
-    "sizes": [
-      "Tamanho único"
-    ],
-    "unavailable": [],
-    "badge": "NOVO"
+    id: 2,
+    name: "Blusa Cropped - Poliamida",
+    category: "feminino",
+    price: 59.9,
+    emoji: "👚",
+    img: ["fotos/cropped.jpeg"],
+    desc: "Forro duplo nos seios, Multiformas (várias formas de uso), Tamanho único (36 ao 40/42).",
+    colors: [{name:"Preto",hex:"#1a1a1a"},{name:"Chocolate",hex:"#D2691E"},{name:"Cinza Claro",hex:"#E0E0E0"},{name:"Azul Escuro",hex:"#000080"},{name:"Rosa Neon",hex:"#FF13F0"},{name:"Azul Turquesa",hex:"#30D5C8"},{name:"Rosa",hex:"#e8a0b0"},{name:"Verde Claro",hex:"#90EE90"}],
+    sizes: ["Tamanho único"],
+    unavailable: [],
+    badge: null
   },
   {
-    "id": 21,
-    "name": "BLUSA ALCINHA RENDA",
-    "category": "feminino",
-    "price": 49.99,
-    "emoji": "👗",
-    "img": [
-      "fotos/blusa_alcinha_renda_muzz3o4a.jpg",
-      "fotos/blusa_alcinha_renda_muzz3r8s.jpg",
-      "fotos/blusa_alcinha_renda_muzz3ucv.jpg"
-    ],
-    "desc": "Tecido: 90% Poliamida e 10% Elastano. Possui toque macio e suave (geladinho), proteção solar 50+ contra raios UVA e UVB, secagem rápida, conforto térmico e excelente elasticidade.",
-    "colors": [
-      {
-        "name": "Preto",
-        "hex": "#1a1a1a"
-      },
-      {
-        "name": "Branco",
-        "hex": "#f0ece4"
-      },
-      {
-        "name": "Marrom",
-        "hex": "#964B00"
-      },
-      {
-        "name": "Vermelho",
-        "hex": "#FF0000"
-      },
-      {
-        "name": "Amarelo",
-        "hex": "#FFFF00"
-      }
-    ],
-    "sizes": [
-      "Tamanho único"
-    ],
-    "unavailable": [],
-    "badge": "NOVO"
+    id: 3,
+    name: "Conjunto Juliet",
+    category: "feminino",
+    price: 145,
+    emoji: "👖",
+    img: "fotos/juliet.jpeg",
+    desc: "Conjunto juliet - alfaiataria.",
+    colors: [{name:"Preto",hex:"#1a1a1a"},{name:"Amarelo",hex:"#FFFF00"},{name:"Verde Menta",hex:"#ADEBB3"}],
+    sizes: ["P","M","G","GG"],
+    unavailable: [],
+    badge: "Mais pedido"
   },
   {
-    "id": 20,
-    "name": "BLUSA LAÇO FRONTAL COM RENDA",
-    "category": "feminino",
-    "price": 45.99,
-    "emoji": "👗",
-    "img": [
-      "fotos/blusa_laco_frontal_com_renda_muzzajnd.jpg",
-      "fotos/blusa_laco_frontal_com_renda_muzzanr2.jpg",
-      "fotos/blusa_laco_frontal_com_renda_muzzar56.jpg",
-      "fotos/blusa_laco_frontal_com_renda_muzzav85.jpg"
-    ],
-    "desc": "",
-    "colors": [
-      {
-        "name": "Preto",
-        "hex": "#1a1a1a"
-      },
-      {
-        "name": "Branco",
-        "hex": "#f0ece4"
-      },
-      {
-        "name": "Marrom",
-        "hex": "#964B00"
-      },
-      {
-        "name": "Rosa",
-        "hex": "#e8a0b0"
-      }
-    ],
-    "sizes": [
-      "Tamanho único"
-    ],
-    "unavailable": [],
-    "badge": "NOVO"
+    id: 4,
+    name: "Calça Pantalona - Alfaiataria",
+    category: "feminino",
+    price: 80,
+    emoji: "👕",
+    img: "fotos/pantalona.jpeg",
+    desc: "Calça Pantalona básica- alfaiataria.",
+    colors: [{name:"Branco",hex:"#f0ece4"},{name:"Preto",hex:"#1a1a1a"},{name:"Off-White",hex:"#e8dcc8"},{name:"Marrom",hex:"#964B00"},{name:"Cinza",hex:"#808080"},{name:"Cinza Chumbo",hex:"#818589"},{name:"Azul Marinho",hex:"#243055"},{name:"Bege",hex:"#c8b49a"},{name:"Bege Escuro",hex:"#AC9362"},{name:"Amarelo",hex:"#FFFF00"},{name:"Verde Militar",hex:"#4B5320"},{name:"Verde Bandeira",hex:"#009440"},{name:"Terra Cota",hex:"#E35336"},{name:"Vinho",hex:"#722F37"},{name:"Vermelho",hex:"#FF0000"}],
+    sizes: ["P","M","G","GG","G1"],
+    unavailable: ["G1"],
+    badge: null
   },
   {
-    "id": 19,
-    "name": "BLUSA DECOTE TWIST",
-    "category": "feminino",
-    "price": 49.99,
-    "emoji": "👗",
-    "img": [
-      "fotos/blusa_decote_twist_muzyyhdq.jpg",
-      "fotos/blusa_decote_twist_muzyyki4.jpg"
-    ],
-    "desc": "Confeccionada em tecido de 90% Poliamida e 10% Elastano, com duas camadas do próprio tecido (zero transparência).\nToque geladinho, secagem rápida, conforto térmico e proteção solar 50+ contra raios UVA e UVB.",
-    "colors": [
-      {
-        "name": "Preto",
-        "hex": "#1a1a1a"
-      },
-      {
-        "name": "Marrom",
-        "hex": "#964B00"
-      },
-      {
-        "name": "Azul Bebê",
-        "hex": "#3c6ee2"
-      },
-      {
-        "name": "Branco",
-        "hex": "#f0ece4"
-      }
-    ],
-    "sizes": [
-      "Tamanho único"
-    ],
-    "unavailable": [],
-    "badge": "NOVO"
+    id: 5,
+    name: "Camiseta Brasil - Masculina.",
+    category: "masculino",
+    price: 160,
+    emoji: "🩳",
+    img: "fotos/brma_1.jpg",
+    desc: "TAILANDESA BRASIL AZUL - MODELO TORCEDOR. ‼️Logo e brasão bordados.‼️Acabamento premium, idêntica à original.",
+    colors: [{name:"Azul",hex:"#4a6888"}],
+    sizes: ["P","M","G","GG","G1","G2"],
+    unavailable: ["P","G1","G2"],
+    badge: null
   },
   {
-    "id": 18,
-    "name": "BLUSINHA MULA MANCA",
-    "category": "feminino",
-    "price": 29.99,
-    "emoji": "👗",
-    "img": [
-      "fotos/blusinha_mula_manca_muzyk2le.jpg",
-      "fotos/blusinha_mula_manca_muzyk5u7.jpg",
-      "fotos/blusinha_mula_manca_muzyknm9.jpg",
-      "fotos/blusinha_mula_manca_muzykqs4.jpg"
-    ],
-    "desc": "DESTAQUES DA PEÇA\n* Modelo mula manca com decote assimétrico\n\n* Visual moderno e feminino\n\n* Modelagem justa que valoriza a silhueta\n\n* Tecido encorpado e confortável\n\n* Alta elasticidade\n\n* Zero transparência\n\n* Forro duplo na região dos seios\n\n* Versátil para diferentes combinações",
-    "colors": [
-      {
-        "name": "Preto",
-        "hex": "#1a1a1a"
-      },
-      {
-        "name": "Vermelho",
-        "hex": "#FF0000"
-      },
-      {
-        "name": "Rosa",
-        "hex": "#e8a0b0"
-      },
-      {
-        "name": "CREME",
-        "hex": "#fffaee"
-      },
-      {
-        "name": "Azul Turquesa",
-        "hex": "#30D5C8"
-      },
-      {
-        "name": "Vinho",
-        "hex": "#722F37"
-      },
-      {
-        "name": "Chocolate",
-        "hex": "#D2691E"
-      }
-    ],
-    "sizes": [
-      "Tamanho único"
-    ],
-    "unavailable": [],
-    "badge": "NOVO"
+    id: 6,
+    name: "Camiseta Brasil - Feminino.",
+    category: "feminino",
+    price: 150,
+    emoji: "🩳",
+    img: "fotos/brfe_1.jpg",
+    desc: "TAILANDESA BRASIL AZUL - MODELO TORCEDOR. ‼️Logo e brasão bordados.‼️Acabamento premium, idêntica à original.",
+    colors: [{name:"Azul",hex:"#4a6888"}],
+    sizes: ["P","M","G","GG","G1","G2"],
+    unavailable: ["G2","P","M","G","GG","G1"],
+    badge: null
   },
   {
-    "id": 17,
-    "name": "BLUSINHA CORTININHA",
-    "category": "feminino",
-    "price": 29.99,
-    "emoji": "👗",
-    "img": [
-      "fotos/blusinha_cortininha_muzybwls.jpg",
-      "fotos/blusinha_cortininha_muzyc058.jpg",
-      "fotos/blusinha_cortininha_muzyc41k.jpg"
-    ],
-    "desc": "",
-    "colors": [
-      {
-        "name": "Preto",
-        "hex": "#1a1a1a"
-      },
-      {
-        "name": "Branco",
-        "hex": "#f0ece4"
-      },
-      {
-        "name": "Vermelho",
-        "hex": "#FF0000"
-      },
-      {
-        "name": "CREME",
-        "hex": "#fffaee"
-      },
-      {
-        "name": "Rosa",
-        "hex": "#e8a0b0"
-      },
-      {
-        "name": "Chocolate",
-        "hex": "#D2691E"
-      },
-      {
-        "name": "Vinho",
-        "hex": "#722F37"
-      },
-      {
-        "name": "Azul Turquesa",
-        "hex": "#30D5C8"
-      },
-      {
-        "name": "Azul Royal",
-        "hex": "#2b00ff"
-      }
-    ],
-    "sizes": [
-      "Tamanho único"
-    ],
-    "unavailable": [],
-    "badge": "NOVO"
+    id: 7,
+    name: "Colete Social - Alfaiataria",
+    category: "feminino",
+    price: 60,
+    emoji: "👗",
+    img: ["fotos/co_1.jpeg","fotos/co_2.jpeg"],
+    desc: "",
+    colors: [{name:"Branco",hex:"#ffffff"},{name:"Off White",hex:"#f5f5f5"},{name:"Preto",hex:"#000000"},{name:"Bege Claro",hex:"#c4a484"},{name:"Bege Escuro",hex:"#d5ac85"},{name:"Vermelho",hex:"#ff0000"},{name:"Terra Cota",hex:"#c58544"},{name:"Azul Bebê",hex:"#3c6ee2"},{name:"Rosa Bebê",hex:"#f72ba2"}],
+    sizes: ["P","M","G","GG"],
+    unavailable: [],
+    badge: null
   },
   {
-    "id": 16,
-    "name": "Saia Longa",
-    "category": "feminino",
-    "price": 49.99,
-    "emoji": "👗",
-    "img": [
-      "fotos/saia_longa_muzy49zv.jpg",
-      "fotos/saia_longa_muzy4h9e.jpg",
-      "fotos/saia_longa_muzy4lib.jpg",
-      "fotos/saia_longa_muzy4pws.jpg",
-      "fotos/saia_longa_muzy4vne.jpg"
-    ],
-    "desc": "DESTAQUES DA PEÇA\n\n* Modelagem justa ao corpo\n\n* Comprimento longo\n\n* Efeito drapeado\n\n* Fenda na parte posterior\n\n* Alta elasticidade\n\n* Forro duplo até a região do quadril\n\n* Tecido confortável e com ótimo caimento",
-    "colors": [
-      {
-        "name": "Preto",
-        "hex": "#1a1a1a"
-      },
-      {
-        "name": "Chocolate",
-        "hex": "#D2691E"
-      },
-      {
-        "name": "Azul Royal",
-        "hex": "#2b00ff"
-      },
-      {
-        "name": "Vinho",
-        "hex": "#722F37"
-      }
-    ],
-    "sizes": [
-      "Tamanho único"
-    ],
-    "unavailable": [],
-    "badge": "NOVO"
+    id: 8,
+    name: "Shorts Lacoste - Modelo Basico",
+    category: "masculino",
+    price: 70,
+    emoji: "👗",
+    img: ["fotos/lac_1.jpeg","fotos/lac_2.jpeg","fotos/lac_3.jpeg","fotos/lac_4.jpeg","fotos/lac_5.jpeg","fotos/lac_6.jpeg","fotos/lac_7.jpeg","fotos/lac_8.jpeg"],
+    desc: "",
+    colors: [{name:"Branco",hex:"#ffffff"},{name:"Preto",hex:"#000000"},{name:"Verde Claro",hex:"#00a80b"},{name:"Azul Marinho",hex:"#0050d1"},{name:"Azul Bebê",hex:"#479bf5"},{name:"Verde Musgo",hex:"#0e7500"},{name:"Vermelho",hex:"#db0000"},{name:"Azul Royal",hex:"#2b00ff"}],
+    sizes: ["P","M","G","GG"],
+    unavailable: ["P"],
+    badge: "Promoção"
   },
   {
-    "id": 15,
-    "name": "BLUSINHA ANTONELLA",
-    "category": "feminino",
-    "price": 29.99,
-    "emoji": "👗",
-    "img": [
-      "fotos/blusinha_antonella_muzxyo8z.jpg",
-      "fotos/blusinha_antonella_muzxysaa.jpg",
-      "fotos/blusinha_antonella_muzxyyic.jpg",
-      "fotos/blusinha_antonella_muzxz2z0.jpg",
-      "fotos/blusinha_antonella_muzxz80l.jpg",
-      "fotos/blusinha_antonella_muzxzbki.jpg"
-    ],
-    "desc": "DESTAQUES DA PEÇA\n\n* Modelo tomara que caia\n\n* Modelagem justa ao corpo\n\n* Franzidos frontais com efeito drapeado\n\n* Tecido encorpado\n\n* Alta elasticidade\n\n* Zero transparência quando utilizada na numeração recomendada\n\n* Forro duplo somente nos seios\n\n* Tamanho único do 36 ao 40\n\n* Comprimento de blusinha\n\n* Fácil de combinar com diferentes peças",
-    "colors": [
-      {
-        "name": "Rosa",
-        "hex": "#e8a0b0"
-      },
-      {
-        "name": "Azul Turquesa",
-        "hex": "#30D5C8"
-      },
-      {
-        "name": "Azul Royal",
-        "hex": "#2b00ff"
-      },
-      {
-        "name": "Chocolate",
-        "hex": "#D2691E"
-      },
-      {
-        "name": "Preto",
-        "hex": "#1a1a1a"
-      },
-      {
-        "name": "Branco",
-        "hex": "#f0ece4"
-      },
-      {
-        "name": "Vinho",
-        "hex": "#722F37"
-      }
-    ],
-    "sizes": [
-      "Tamanho único"
-    ],
-    "unavailable": [],
-    "badge": "NOVO"
+    id: 9,
+    name: "Shorts Boss",
+    category: "masculino",
+    price: 70,
+    emoji: "👗",
+    img: ["fotos/boss_1.jpeg","fotos/boss_2.jpeg","fotos/boss_3.jpeg","fotos/boss_4.jpeg","fotos/boss_5.jpeg","fotos/boss_6.jpeg"],
+    desc: "",
+    colors: [{name:"Branco",hex:"#ffffff"},{name:"Preto",hex:"#000000"},{name:"Azul Royal",hex:"#2b00ff"},{name:"Azul Bebê",hex:"#3c6ee2"},{name:"Azul Marinho",hex:"#243055"}],
+    sizes: ["P","M","G","GG"],
+    unavailable: ["P"],
+    badge: "Promoção"
   },
   {
-    "id": 2,
-    "name": "CROPPED MULTIFORMAS",
-    "category": "feminino",
-    "price": 49.99,
-    "emoji": "👚",
-    "img": "fotos/cropped.jpeg",
-    "desc": "Forro duplo nos seios, Multiformas (várias formas de uso), Tamanho único (36 ao 40/42).",
-    "colors": [
-      {
-        "name": "Preto",
-        "hex": "#1a1a1a"
-      },
-      {
-        "name": "Chocolate",
-        "hex": "#D2691E"
-      },
-      {
-        "name": "Cinza Claro",
-        "hex": "#E0E0E0"
-      },
-      {
-        "name": "Azul Escuro",
-        "hex": "#000080"
-      },
-      {
-        "name": "Rosa Neon",
-        "hex": "#FF13F0"
-      },
-      {
-        "name": "Azul Turquesa",
-        "hex": "#30D5C8"
-      },
-      {
-        "name": "Rosa",
-        "hex": "#e8a0b0"
-      },
-      {
-        "name": "Verde Claro",
-        "hex": "#90EE90"
-      }
-    ],
-    "sizes": [
-      "Tamanho único"
-    ],
-    "unavailable": [],
-    "badge": null
+    id: 10,
+    name: "Shorts Emporio Armani",
+    category: "masculino",
+    price: 70,
+    emoji: "👗",
+    img: ["fotos/ea_1.jpeg","fotos/ea_2.jpeg"],
+    desc: "",
+    colors: [{name:"Preto",hex:"#1a1a1a"},{name:"Cinza Escuro",hex:"#4f4f4f"},{name:"Vermelho",hex:"#FF0000"},{name:"Bege Claro",hex:"#c4a484"}],
+    sizes: ["P","M","G","GG"],
+    unavailable: ["P"],
+    badge: "Promoção"
   },
   {
-    "id": 3,
-    "name": "Conjunto Juliet",
-    "category": "feminino",
-    "price": 145,
-    "emoji": "👖",
-    "img": "fotos/juliet.jpeg",
-    "desc": "Conjunto juliet - alfaiataria.",
-    "colors": [
-      {
-        "name": "Preto",
-        "hex": "#1a1a1a"
-      },
-      {
-        "name": "Amarelo",
-        "hex": "#FFFF00"
-      },
-      {
-        "name": "Verde Menta",
-        "hex": "#ADEBB3"
-      }
-    ],
-    "sizes": [
-      "P",
-      "M",
-      "G",
-      "GG"
-    ],
-    "unavailable": [],
-    "badge": "Mais pedido"
+    id: 11,
+    name: "Cropped Lumi",
+    category: "feminino",
+    price: 65,
+    emoji: "👗",
+    img: ["fotos/lu_1.jpeg","fotos/lu_2.jpeg","fotos/lu_3.jpeg","fotos/lu_4.jpeg"],
+    desc: "Diferenciais:\n* Abertura frontal moderna\n* Detalhe no dedo estilo gringa\n* Manga longa\n* Alta elasticidade\n* Tecido confortável e encorpado\n* Modelagem que valoriza o corpo",
+    colors: [{name:"Off White",hex:"#f5f5f5"},{name:"Preto",hex:"#1a1a1a"},{name:"Cinza Claro",hex:"#E0E0E0"},{name:"Vinho",hex:"#722F37"},{name:"Chocolate",hex:"#D2691E"},{name:"Verde Escuro",hex:"#013220"},{name:"Rosa",hex:"#e8a0b0"}],
+    sizes: ["UNICO"],
+    unavailable: [],
+    badge: null
   },
   {
-    "id": 4,
-    "name": "Calça Pantalona - Alfaiataria",
-    "category": "feminino",
-    "price": 80,
-    "emoji": "👕",
-    "img": "fotos/pantalona.jpeg",
-    "desc": "Calça Pantalona básica- alfaiataria.",
-    "colors": [
-      {
-        "name": "Branco",
-        "hex": "#f0ece4"
-      },
-      {
-        "name": "Preto",
-        "hex": "#1a1a1a"
-      },
-      {
-        "name": "Off-White",
-        "hex": "#e8dcc8"
-      },
-      {
-        "name": "Marrom",
-        "hex": "#964B00"
-      },
-      {
-        "name": "Cinza",
-        "hex": "#808080"
-      },
-      {
-        "name": "Cinza Chumbo",
-        "hex": "#818589"
-      },
-      {
-        "name": "Azul Marinho",
-        "hex": "#243055"
-      },
-      {
-        "name": "Bege",
-        "hex": "#c8b49a"
-      },
-      {
-        "name": "Bege Escuro",
-        "hex": "#AC9362"
-      },
-      {
-        "name": "Amarelo",
-        "hex": "#FFFF00"
-      },
-      {
-        "name": "Verde Militar",
-        "hex": "#4B5320"
-      },
-      {
-        "name": "Verde Bandeira",
-        "hex": "#009440"
-      },
-      {
-        "name": "Terra Cota",
-        "hex": "#E35336"
-      },
-      {
-        "name": "Vinho",
-        "hex": "#722F37"
-      },
-      {
-        "name": "Vermelho",
-        "hex": "#FF0000"
-      }
-    ],
-    "sizes": [
-      "P",
-      "M",
-      "G",
-      "GG",
-      "G1"
-    ],
-    "unavailable": [
-      "G1"
-    ],
-    "badge": null
+    id: 12,
+    name: "Moletom Feminino Nike",
+    category: "feminino",
+    price: 149.99,
+    emoji: "👗",
+    img: ["fotos/moni_1.jpeg","fotos/moni_2.jpeg","fotos/moni_3.jpeg","fotos/moni_4.jpeg"],
+    desc: "",
+    colors: [{name:"Cinza",hex:"#808080"},{name:"Rosa Bebê",hex:"#f72ba2"},{name:"Preto",hex:"#1a1a1a"},{name:"Bege",hex:"#c8b49a"}],
+    sizes: ["P","M","G","GG"],
+    unavailable: [],
+    badge: "Novo"
   },
   {
-    "id": 7,
-    "name": "Colete Social - Alfaiataria",
-    "category": "feminino",
-    "price": 60,
-    "emoji": "👗",
-    "img": [
-      "fotos/co_1.jpeg",
-      "fotos/co_2.jpeg"
-    ],
-    "desc": "",
-    "colors": [
-      {
-        "name": "Branco",
-        "hex": "#ffffff"
-      },
-      {
-        "name": "Off White",
-        "hex": "#f5f5f5"
-      },
-      {
-        "name": "Preto",
-        "hex": "#000000"
-      },
-      {
-        "name": "Bege Claro",
-        "hex": "#c4a484"
-      },
-      {
-        "name": "Bege Escuro",
-        "hex": "#d5ac85"
-      },
-      {
-        "name": "Vermelho",
-        "hex": "#ff0000"
-      },
-      {
-        "name": "Terra Cota",
-        "hex": "#c58544"
-      },
-      {
-        "name": "Azul Bebê",
-        "hex": "#3c6ee2"
-      },
-      {
-        "name": "Rosa Bebê",
-        "hex": "#f72ba2"
-      }
-    ],
-    "sizes": [
-      "P",
-      "M",
-      "G",
-      "GG"
-    ],
-    "unavailable": [],
-    "badge": null
+    id: 13,
+    name: "Moletom Feminino Adidas",
+    category: "feminino",
+    price: 149.9,
+    emoji: "👗",
+    img: ["fotos/moad_1.jpeg","fotos/moad_2.jpeg","fotos/moad_3.jpeg","fotos/moad_4.jpeg"],
+    desc: "",
+    colors: [{name:"Cinza",hex:"#808080"},{name:"Preto",hex:"#1a1a1a"},{name:"Bege",hex:"#c8b49a"},{name:"Rosa Bebê",hex:"#f72ba2"}],
+    sizes: ["P","M","G","GG"],
+    unavailable: [],
+    badge: "Novo"
   },
   {
-    "id": 8,
-    "name": "Shorts Lacoste - Modelo Basico",
-    "category": "masculino",
-    "price": 70,
-    "emoji": "👗",
-    "img": [
-      "fotos/lac_1.jpeg",
-      "fotos/lac_2.jpeg",
-      "fotos/lac_3.jpeg",
-      "fotos/lac_4.jpeg",
-      "fotos/lac_5.jpeg",
-      "fotos/lac_6.jpeg",
-      "fotos/lac_7.jpeg",
-      "fotos/lac_8.jpeg"
-    ],
-    "desc": "",
-    "colors": [
-      {
-        "name": "Branco",
-        "hex": "#ffffff"
-      },
-      {
-        "name": "Preto",
-        "hex": "#000000"
-      },
-      {
-        "name": "Verde Claro",
-        "hex": "#00a80b"
-      },
-      {
-        "name": "Azul Marinho",
-        "hex": "#0050d1"
-      },
-      {
-        "name": "Azul Bebê",
-        "hex": "#479bf5"
-      },
-      {
-        "name": "Verde Musgo",
-        "hex": "#0e7500"
-      },
-      {
-        "name": "Vermelho",
-        "hex": "#db0000"
-      },
-      {
-        "name": "Azul Royal",
-        "hex": "#2b00ff"
-      }
-    ],
-    "sizes": [
-      "P",
-      "M",
-      "G",
-      "GG"
-    ],
-    "unavailable": [
-      "P"
-    ],
-    "badge": "Promoção"
-  },
-  {
-    "id": 9,
-    "name": "Shorts Boss",
-    "category": "masculino",
-    "price": 70,
-    "emoji": "👗",
-    "img": [
-      "fotos/boss_1.jpeg",
-      "fotos/boss_2.jpeg",
-      "fotos/boss_3.jpeg",
-      "fotos/boss_4.jpeg",
-      "fotos/boss_5.jpeg",
-      "fotos/boss_6.jpeg"
-    ],
-    "desc": "",
-    "colors": [
-      {
-        "name": "Branco",
-        "hex": "#ffffff"
-      },
-      {
-        "name": "Preto",
-        "hex": "#000000"
-      },
-      {
-        "name": "Azul Royal",
-        "hex": "#2b00ff"
-      },
-      {
-        "name": "Azul Bebê",
-        "hex": "#3c6ee2"
-      },
-      {
-        "name": "Azul Marinho",
-        "hex": "#243055"
-      }
-    ],
-    "sizes": [
-      "P",
-      "M",
-      "G",
-      "GG"
-    ],
-    "unavailable": [
-      "P"
-    ],
-    "badge": "Promoção"
-  },
-  {
-    "id": 10,
-    "name": "Shorts Emporio Armani",
-    "category": "masculino",
-    "price": 70,
-    "emoji": "👗",
-    "img": [
-      "fotos/ea_1.jpeg",
-      "fotos/ea_2.jpeg"
-    ],
-    "desc": "",
-    "colors": [
-      {
-        "name": "Preto",
-        "hex": "#1a1a1a"
-      },
-      {
-        "name": "Cinza Escuro",
-        "hex": "#4f4f4f"
-      },
-      {
-        "name": "Vermelho",
-        "hex": "#FF0000"
-      },
-      {
-        "name": "Bege Claro",
-        "hex": "#c4a484"
-      }
-    ],
-    "sizes": [
-      "P",
-      "M",
-      "G",
-      "GG"
-    ],
-    "unavailable": [
-      "P"
-    ],
-    "badge": "Promoção"
-  },
-  {
-    "id": 11,
-    "name": "Cropped Lumi",
-    "category": "feminino",
-    "price": 65,
-    "emoji": "👗",
-    "img": [
-      "fotos/lu_1.jpeg",
-      "fotos/lu_2.jpeg",
-      "fotos/lu_3.jpeg",
-      "fotos/lu_4.jpeg"
-    ],
-    "desc": "Diferenciais:\n* Abertura frontal moderna\n* Detalhe no dedo estilo gringa\n* Manga longa\n* Alta elasticidade\n* Tecido confortável e encorpado\n* Modelagem que valoriza o corpo",
-    "colors": [
-      {
-        "name": "Off White",
-        "hex": "#f5f5f5"
-      },
-      {
-        "name": "Preto",
-        "hex": "#1a1a1a"
-      },
-      {
-        "name": "Cinza Claro",
-        "hex": "#E0E0E0"
-      },
-      {
-        "name": "Vinho",
-        "hex": "#722F37"
-      },
-      {
-        "name": "Chocolate",
-        "hex": "#D2691E"
-      },
-      {
-        "name": "Verde Escuro",
-        "hex": "#013220"
-      },
-      {
-        "name": "Rosa",
-        "hex": "#e8a0b0"
-      }
-    ],
-    "sizes": [
-      "Tamanho único"
-    ],
-    "unavailable": [],
-    "badge": null
-  },
-  {
-    "id": 1,
-    "name": "BabyTee Gola Alta",
-    "category": "feminino",
-    "price": 65,
-    "emoji": "👗",
-    "img": [
-      "fotos/babytee.jpeg",
-      "fotos/babytee2.jpeg"
-    ],
-    "desc": "Peça coringa para todas as estações. Tamanho único veste do 36 ao 40.",
-    "colors": [
-      {
-        "name": "Preto",
-        "hex": "#1a1a1a"
-      },
-      {
-        "name": "Cinza",
-        "hex": "#808080"
-      },
-      {
-        "name": "Off-White",
-        "hex": "#e8dcc8"
-      },
-      {
-        "name": "Verde Escuro",
-        "hex": "#013220"
-      },
-      {
-        "name": "Rosa",
-        "hex": "#e8a0b0"
-      },
-      {
-        "name": "Chocolate",
-        "hex": "#D2691E"
-      }
-    ],
-    "sizes": [
-      "Tamanho único"
-    ],
-    "unavailable": [
-      "Tamanho único"
-    ],
-    "badge": "Novo"
-  },
-  {
-    "id": 5,
-    "name": "Camiseta Brasil - Masculina.",
-    "category": "masculino",
-    "price": 160,
-    "emoji": "🩳",
-    "img": "fotos/brma_1.jpg",
-    "desc": "TAILANDESA BRASIL AZUL - MODELO TORCEDOR. ‼️Logo e brasão bordados.‼️Acabamento premium, idêntica à original.",
-    "colors": [
-      {
-        "name": "Azul",
-        "hex": "#4a6888"
-      }
-    ],
-    "sizes": [
-      "P",
-      "M",
-      "G",
-      "GG",
-      "G1",
-      "G2"
-    ],
-    "unavailable": [
-      "P",
-      "M",
-      "G",
-      "GG",
-      "G1",
-      "G2"
-    ],
-    "badge": null
-  },
-  {
-    "id": 12,
-    "name": "Moletom Feminino Nike",
-    "category": "feminino",
-    "price": 149.99,
-    "emoji": "👗",
-    "img": [
-      "fotos/moni_1.jpeg",
-      "fotos/moni_2.jpeg",
-      "fotos/moni_3.jpeg",
-      "fotos/moni_4.jpeg"
-    ],
-    "desc": "",
-    "colors": [
-      {
-        "name": "Cinza",
-        "hex": "#808080"
-      },
-      {
-        "name": "Rosa Bebê",
-        "hex": "#f72ba2"
-      },
-      {
-        "name": "Preto",
-        "hex": "#1a1a1a"
-      },
-      {
-        "name": "Bege",
-        "hex": "#c8b49a"
-      }
-    ],
-    "sizes": [
-      "P",
-      "M",
-      "G",
-      "GG"
-    ],
-    "unavailable": [
-      "P",
-      "M",
-      "G",
-      "GG"
-    ],
-    "badge": "Novo"
-  },
-  {
-    "id": 13,
-    "name": "Moletom Feminino Adidas",
-    "category": "feminino",
-    "price": 149.9,
-    "emoji": "👗",
-    "img": [
-      "fotos/moad_1.jpeg",
-      "fotos/moad_2.jpeg",
-      "fotos/moad_3.jpeg",
-      "fotos/moad_4.jpeg"
-    ],
-    "desc": "",
-    "colors": [
-      {
-        "name": "Cinza",
-        "hex": "#808080"
-      },
-      {
-        "name": "Preto",
-        "hex": "#1a1a1a"
-      },
-      {
-        "name": "Bege",
-        "hex": "#c8b49a"
-      },
-      {
-        "name": "Rosa Bebê",
-        "hex": "#f72ba2"
-      }
-    ],
-    "sizes": [
-      "P",
-      "M",
-      "G",
-      "GG"
-    ],
-    "unavailable": [
-      "P",
-      "M",
-      "G",
-      "GG"
-    ],
-    "badge": "Novo"
-  },
-  {
-    "id": 14,
-    "name": "Moletom Feminino Puma",
-    "category": "feminino",
-    "price": 149.9,
-    "emoji": "👗",
-    "img": [
-      "fotos/mopu_1.jpeg",
-      "fotos/mopu_2.jpeg",
-      "fotos/mopu_3.jpeg",
-      "fotos/mopu_4.jpeg"
-    ],
-    "desc": "",
-    "colors": [
-      {
-        "name": "Cinza",
-        "hex": "#808080"
-      },
-      {
-        "name": "Preto",
-        "hex": "#1a1a1a"
-      },
-      {
-        "name": "Bege",
-        "hex": "#c8b49a"
-      },
-      {
-        "name": "Rosa Bebê",
-        "hex": "#f72ba2"
-      }
-    ],
-    "sizes": [
-      "P",
-      "M",
-      "G",
-      "GG"
-    ],
-    "unavailable": [
-      "P",
-      "M",
-      "G",
-      "GG"
-    ],
-    "badge": "Novo"
-  },
-  {
-    "id": 6,
-    "name": "Camiseta Brasil - Feminino.",
-    "category": "feminino",
-    "price": 150,
-    "emoji": "🩳",
-    "img": "fotos/brfe_1.jpg",
-    "desc": "TAILANDESA BRASIL AZUL - MODELO TORCEDOR. ‼️Logo e brasão bordados.‼️Acabamento premium, idêntica à original.",
-    "colors": [
-      {
-        "name": "Azul",
-        "hex": "#4a6888"
-      }
-    ],
-    "sizes": [
-      "P",
-      "M",
-      "G",
-      "GG",
-      "G1",
-      "G2"
-    ],
-    "unavailable": [
-      "G2",
-      "P",
-      "M",
-      "G",
-      "GG",
-      "G1"
-    ],
-    "badge": null
+    id: 14,
+    name: "Moletom Feminino Puma",
+    category: "feminino",
+    price: 149.9,
+    emoji: "👗",
+    img: ["fotos/mopu_1.jpeg","fotos/mopu_2.jpeg","fotos/mopu_3.jpeg","fotos/mopu_4.jpeg"],
+    desc: "",
+    colors: [{name:"Cinza",hex:"#808080"},{name:"Preto",hex:"#1a1a1a"},{name:"Bege",hex:"#c8b49a"},{name:"Rosa Bebê",hex:"#f72ba2"}],
+    sizes: ["P","M","G","GG"],
+    unavailable: [],
+    badge: "Novo"
   }
 ];
 
