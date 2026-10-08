@@ -905,16 +905,54 @@ function cartQty(i,d){ cart[i].qty+=d; if(cart[i].qty<1){ removeItem(i); return;
 const PRODUCTS = [
   {
     "id": 30,
-    "name": "Novo Produto",
+    "name": "SAIA LONGA",
     "category": "feminino",
-    "price": 0,
+    "price": 49.99,
     "emoji": "👗",
     "img": [],
     "desc": "",
     "colors": [],
-    "sizes": [],
+    "sizes": [
+      "Tamanho único"
+    ],
     "unavailable": [],
     "badge": null
+  },
+  {
+    "id": 31,
+    "name": "BLUSINHA ANTONELLA",
+    "category": "feminino",
+    "price": 29.99,
+    "emoji": "👗",
+    "img": [
+      "fotos/blusinha_antonella_mv069th3.jpg",
+      "fotos/blusinha_antonella_mv06a1ea.jpg",
+      "fotos/blusinha_antonella_mv06a9q6.jpg"
+    ],
+    "desc": "",
+    "colors": [
+      {
+        "name": "Chocolate",
+        "hex": "#D2691E"
+      },
+      {
+        "name": "Azul Royal",
+        "hex": "#2b00ff"
+      },
+      {
+        "name": "Azul Turquesa",
+        "hex": "#30D5C8"
+      },
+      {
+        "name": "Rosa",
+        "hex": "#e8a0b0"
+      }
+    ],
+    "sizes": [
+      "Tamanho único"
+    ],
+    "unavailable": [],
+    "badge": "NOVO"
   },
   {
     "id": 29,
