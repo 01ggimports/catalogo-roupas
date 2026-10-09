@@ -904,29 +904,6 @@ function cartQty(i,d){ cart[i].qty+=d; if(cart[i].qty<1){ removeItem(i); return;
 
 const PRODUCTS = [
   {
-    "id": 42,
-    "name": "BLUSA DECOTE LUA",
-    "category": "feminino",
-    "price": 39.99,
-    "emoji": "👗",
-    "img": [
-      "fotos/blusa_decote_lua_mv0en3xt.jpg",
-      "fotos/blusa_decote_lua_mv0en6mj.jpg"
-    ],
-    "desc": "",
-    "colors": [
-      {
-        "name": "Amarelo",
-        "hex": "#FFFF00"
-      }
-    ],
-    "sizes": [
-      "Tamanho único"
-    ],
-    "unavailable": [],
-    "badge": null
-  },
-  {
     "id": 44,
     "name": "BLUSA ALCINHA RENDA",
     "category": "feminino",
@@ -2355,6 +2332,31 @@ const PRODUCTS = [
       "P"
     ],
     "badge": "MAIS PEDIDO"
+  },
+  {
+    "id": 42,
+    "name": "BLUSA DECOTE LUA",
+    "category": "feminino",
+    "price": 39.99,
+    "emoji": "👗",
+    "img": [
+      "fotos/blusa_decote_lua_mv0en3xt.jpg",
+      "fotos/blusa_decote_lua_mv0en6mj.jpg"
+    ],
+    "desc": "",
+    "colors": [
+      {
+        "name": "Amarelo",
+        "hex": "#FFFF00"
+      }
+    ],
+    "sizes": [
+      "Tamanho único"
+    ],
+    "unavailable": [
+      "Tamanho único"
+    ],
+    "badge": null
   }
 ];
 
