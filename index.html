@@ -904,7 +904,7 @@ function cartQty(i,d){ cart[i].qty+=d; if(cart[i].qty<1){ removeItem(i); return;
 
 const PRODUCTS = [
   {
-    "id": 63,
+    "id": 65,
     "name": "Novo Produto",
     "category": "feminino",
     "price": 0,
@@ -913,32 +913,268 @@ const PRODUCTS = [
     "desc": "",
     "colors": [],
     "sizes": [],
+    "unavailable": [],
+    "badge": null
+  },
+  {
+    "id": 64,
+    "name": "CALÇA ALFAIATARIA CINTO",
+    "category": "feminino",
+    "price": 69.99,
+    "emoji": "👗",
+    "img": [],
+    "desc": "",
+    "colors": [
+      {
+        "name": "Preto",
+        "hex": "#1a1a1a"
+      },
+      {
+        "name": "Azul Marinho",
+        "hex": "#243055"
+      },
+      {
+        "name": "Off White",
+        "hex": "#f5f5f5"
+      },
+      {
+        "name": "Branco",
+        "hex": "#f0ece4"
+      },
+      {
+        "name": "Vinho",
+        "hex": "#722F37"
+      },
+      {
+        "name": "Bege",
+        "hex": "#c8b49a"
+      },
+      {
+        "name": "Bege Claro",
+        "hex": "#c4a484"
+      },
+      {
+        "name": "Bege Escuro",
+        "hex": "#d5ac85"
+      },
+      {
+        "name": "Rosa",
+        "hex": "#e8a0b0"
+      },
+      {
+        "name": "Rosa Bebê",
+        "hex": "#f72ba2"
+      },
+      {
+        "name": "Verde Bandeira",
+        "hex": "#009440"
+      },
+      {
+        "name": "Verde Menta",
+        "hex": "#ADEBB3"
+      },
+      {
+        "name": "Terra Cota",
+        "hex": "#c58544"
+      },
+      {
+        "name": "LARANJA",
+        "hex": "#fe3e3e"
+      }
+    ],
+    "sizes": [
+      "P",
+      "M",
+      "G",
+      "GG"
+    ],
+    "unavailable": [],
+    "badge": null
+  },
+  {
+    "id": 63,
+    "name": "CALÇA ALFAIATARIA ZARA",
+    "category": "feminino",
+    "price": 69.99,
+    "emoji": "👗",
+    "img": [],
+    "desc": "",
+    "colors": [
+      {
+        "name": "Preto",
+        "hex": "#1a1a1a"
+      },
+      {
+        "name": "Azul Marinho",
+        "hex": "#243055"
+      },
+      {
+        "name": "Off White",
+        "hex": "#f5f5f5"
+      },
+      {
+        "name": "Branco",
+        "hex": "#f0ece4"
+      },
+      {
+        "name": "Azul Bebê",
+        "hex": "#3c6ee2"
+      },
+      {
+        "name": "Vinho",
+        "hex": "#722F37"
+      },
+      {
+        "name": "Cinza",
+        "hex": "#808080"
+      },
+      {
+        "name": "Cinza Claro",
+        "hex": "#E0E0E0"
+      },
+      {
+        "name": "Cinza Chumbo",
+        "hex": "#818589"
+      },
+      {
+        "name": "Marrom",
+        "hex": "#964B00"
+      },
+      {
+        "name": "Bege",
+        "hex": "#c8b49a"
+      },
+      {
+        "name": "Bege Escuro",
+        "hex": "#d5ac85"
+      },
+      {
+        "name": "Bege Claro",
+        "hex": "#c4a484"
+      },
+      {
+        "name": "Rosa",
+        "hex": "#e8a0b0"
+      },
+      {
+        "name": "Rosa Bebê",
+        "hex": "#f72ba2"
+      },
+      {
+        "name": "Amarelo",
+        "hex": "#FFFF00"
+      },
+      {
+        "name": "Verde Bandeira",
+        "hex": "#009440"
+      },
+      {
+        "name": "Verde Menta",
+        "hex": "#ADEBB3"
+      },
+      {
+        "name": "Azul Turquesa",
+        "hex": "#30D5C8"
+      },
+      {
+        "name": "LARANJA",
+        "hex": "#fe3e3e"
+      }
+    ],
+    "sizes": [
+      "P",
+      "M",
+      "G",
+      "GG"
+    ],
     "unavailable": [],
     "badge": null
   },
   {
     "id": 62,
-    "name": "Novo Produto",
+    "name": "CONJUNTO SIENNA",
     "category": "feminino",
-    "price": 0,
+    "price": 119.99,
     "emoji": "👗",
     "img": [],
     "desc": "",
-    "colors": [],
-    "sizes": [],
+    "colors": [
+      {
+        "name": "Preto",
+        "hex": "#1a1a1a"
+      },
+      {
+        "name": "Marrom",
+        "hex": "#964B00"
+      },
+      {
+        "name": "Cinza",
+        "hex": "#808080"
+      },
+      {
+        "name": "Terra Cota",
+        "hex": "#c58544"
+      },
+      {
+        "name": "Verde Militar",
+        "hex": "#4B5320"
+      },
+      {
+        "name": "Bege Claro",
+        "hex": "#c4a484"
+      }
+    ],
+    "sizes": [
+      "G",
+      "GG"
+    ],
     "unavailable": [],
     "badge": null
   },
   {
     "id": 61,
-    "name": "Novo Produto",
+    "name": "CONJUNTO AURA",
     "category": "feminino",
-    "price": 0,
+    "price": 100,
     "emoji": "👗",
     "img": [],
     "desc": "",
-    "colors": [],
-    "sizes": [],
+    "colors": [
+      {
+        "name": "Preto",
+        "hex": "#1a1a1a"
+      },
+      {
+        "name": "Bege Escuro",
+        "hex": "#d5ac85"
+      },
+      {
+        "name": "Cinza",
+        "hex": "#808080"
+      },
+      {
+        "name": "Vinho",
+        "hex": "#722F37"
+      },
+      {
+        "name": "Marrom",
+        "hex": "#964B00"
+      },
+      {
+        "name": "Bege Claro",
+        "hex": "#c4a484"
+      },
+      {
+        "name": "Azul Marinho",
+        "hex": "#243055"
+      }
+    ],
+    "sizes": [
+      "P",
+      "M",
+      "G",
+      "GG"
+    ],
     "unavailable": [],
     "badge": null
   },
