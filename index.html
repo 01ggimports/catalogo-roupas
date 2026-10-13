@@ -678,6 +678,10 @@ header{box-shadow:0 2px 12px rgba(80,50,140,.06)}
 :root{--logo-gold:#c9a84c}
 .logo{font-family:'Playfair Display',serif;font-weight:400;color:var(--logo-gold);letter-spacing:.03em}
 .logo span{font-style:italic;font-weight:400;color:#0e0c0a}
+.card-price,.product-price{display:flex;flex-wrap:wrap;align-items:baseline;gap:2px 6px}
+.cur{white-space:nowrap}
+.old-price{flex-basis:100%;margin:0;white-space:nowrap}
+.off{margin-left:0;white-space:nowrap}
 </style>
 </head>
 <body>
@@ -864,7 +868,12 @@ function applyCoupon(){
   else { coupon=c; inp.value=''; msg.textContent=''; renderCart(); showToast('✓ Cupom aplicado!'); }
 }
 function removeCoupon(){ coupon=null; renderCart(); }
-const CAT_LABELS = { feminino:"Feminino", masculino:"Masculino", sapatos:"Sapatos", bolsas:"Bolsas", vestido:"Vestidos", casual:"Casual", plus:"Plus Size" };
+const CATEGORIES = [
+  {"id":"feminino","label":"Feminino"},{"id":"masculino","label":"Masculino"},
+  {"id":"sapatos","label":"Sapatos"},{"id":"bolsas","label":"Bolsas"},
+  {"id":"vestido","label":"Vestidos"},{"id":"casual","label":"Casual"},{"id":"plus","label":"Plus Size"}
+];
+const CAT_LABELS = Object.fromEntries(CATEGORIES.map(c => [c.id, c.label]));
 let searchTerm = '';
 function norm(t){ return (t||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase(); }
 function matchSearch(p){
@@ -875,10 +884,10 @@ function onSearch(v){ searchTerm=v.trim(); renderGrid(activeFilter); }
 function pctOff(p){ return p.oldPrice && p.oldPrice>p.price ? Math.round((1-p.price/p.oldPrice)*100) : 0; }
 function priceHtml(p){
   const o=pctOff(p);
-  return (o?`<span class="old-price">${formatPrice(p.oldPrice)}</span>`:'')+formatPrice(p.price)+(o?`<span class="off">-${o}%</span>`:'');
+  return (o?`<span class="old-price">${formatPrice(p.oldPrice)}</span>`:'')+`<span class="cur">${formatPrice(p.price)}</span>`+(o?`<span class="off">-${o}%</span>`:'');
 }
 function buildFilters(){
-  const order=Object.keys(CAT_LABELS);
+  const order=CATEGORIES.map(c=>c.id);
   const cats=[...new Set(PRODUCTS.map(p=>p.category))].sort((a,b)=>{const ia=order.indexOf(a),ib=order.indexOf(b);return (ia<0?99:ia)-(ib<0?99:ib);});
   document.getElementById('filters').innerHTML=['all',...cats].map((c,i)=>`<button class="chip${i?'':' active'}" onclick="filterCat('${c}', this)">${c==='all'?'Tudo':categoryLabel(c)}</button>`).join('');
 }
