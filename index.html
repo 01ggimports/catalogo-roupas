@@ -869,9 +869,38 @@ function applyCoupon(){
 }
 function removeCoupon(){ coupon=null; renderCart(); }
 const CATEGORIES = [
-  {"id":"feminino","label":"Feminino"},{"id":"masculino","label":"Masculino"},
-  {"id":"sapatos","label":"Sapatos"},{"id":"bolsas","label":"Bolsas"},
-  {"id":"vestido","label":"Vestidos"},{"id":"casual","label":"Casual"},{"id":"plus","label":"Plus Size"}
+  {
+    "id": "feminino",
+    "label": "Feminino"
+  },
+  {
+    "id": "masculino",
+    "label": "Masculino"
+  },
+  {
+    "id": "sapatos",
+    "label": "Sapatos"
+  },
+  {
+    "id": "bolsas",
+    "label": "Bolsas"
+  },
+  {
+    "id": "vestido",
+    "label": "Vestidos"
+  },
+  {
+    "id": "casual",
+    "label": "Casual"
+  },
+  {
+    "id": "plus",
+    "label": "Plus Size"
+  },
+  {
+    "id": "academia",
+    "label": "Academia"
+  }
 ];
 const CAT_LABELS = Object.fromEntries(CATEGORIES.map(c => [c.id, c.label]));
 let searchTerm = '';
@@ -912,6 +941,32 @@ function syncFloat(){
 function cartQty(i,d){ cart[i].qty+=d; if(cart[i].qty<1){ removeItem(i); return; } updateCartCount(); renderCart(); }
 
 const PRODUCTS = [
+  {
+    "id": 71,
+    "name": "Novo Produto",
+    "category": "feminino",
+    "price": 0,
+    "emoji": "👗",
+    "img": [],
+    "desc": "",
+    "colors": [],
+    "sizes": [],
+    "unavailable": [],
+    "badge": null
+  },
+  {
+    "id": 70,
+    "name": "Novo Produto",
+    "category": "feminino",
+    "price": 0,
+    "emoji": "👗",
+    "img": [],
+    "desc": "",
+    "colors": [],
+    "sizes": [],
+    "unavailable": [],
+    "badge": null
+  },
   {
     "id": 65,
     "name": "CALÇA PANTALONA COURINO",
